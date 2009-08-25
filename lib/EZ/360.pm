@@ -52,7 +52,7 @@ L<EZ::360::Controller::Root>, L<Catalyst>
 
 =head1 AUTHOR
 
-Catalyst developer
+Alan Haggai Alavi
 
 =head1 LICENSE
 
