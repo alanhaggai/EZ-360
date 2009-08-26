@@ -1,0 +1,44 @@
+[% META title = 'EZ::360 - Create User' -%]
+
+<form method='post' action='[% c.uri_for("/user/create/do") %]'>
+    <fieldset>
+        <legend>Create User</legend>
+        <p>
+            <label for='user-username'>
+                Username:
+                <input type='text' name='username' id='user-username' />
+            </label>
+        </p>
+        <p>
+            <label for='user-password'>
+                Password:
+                <input type='password' name='password' id='user-password' />
+            </label>
+        </p>
+        <p>
+            <label for='user-email'>
+                E-mail:
+                <input type='text' name='email' id='user-email' />
+            </label>
+        </p>
+        <p>
+            <label for='user-realname'>
+                Real Name:
+                <input type='text' name='realname' id='user-realname' />
+            </label>
+        </p>
+        <fieldset>
+            <legend>Roles</legend>
+            <input type='checkbox' name='can-create-article' />Can create article<br />
+            <input type='checkbox' name='can-update-article' />Can update article<br />
+            <input type='checkbox' name='can-delete-article' />Can delete article<br />
+            <input type='checkbox' name='can-create-user' />Can create user<br />
+            <input type='checkbox' name='can-update-user' />Can update user<br />
+            <input type='checkbox' name='can-delete-user' />Can delete user<br />
+            <input type='checkbox' name='superuser' />Superuser<br />
+        </fieldset>
+    </fieldset>
+    <p>
+        <input type='submit' value='Create User' />
+    </p>
+</form>
