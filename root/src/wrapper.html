@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+
+    <head>
+        <title>[% template.title %]</title>
+        <link rel='stylesheet' href='[% c.uri_for("/static/css/style.css") %]' />
+    </head>
+
+    <body>
+        <div id='header'>
+            <h1>EZ::360</h1>
+        </div>
+
+        <div id='navigation-bar'>
+            <ul>
+                <li><a href='[% c.uri_for( c.controller("Root").action_for("/") ) %]'>Main</a></li>
+            </ul>
+        </div>
+
+        <div id='content'>
+            [% IF status_message -%]
+            <div class='status-message'>[% status_message -%]</div>
+            [% END -%]
+            [% content -%]
+        </div>
+
+        <div id='footer'>
+            Copyright &copy; 2009 <a href='http://cubegin.com/'>CubeGin</a>. All rights reserved.
+        </div>
+    </body>
+
+</html>
