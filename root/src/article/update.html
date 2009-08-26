@@ -1,0 +1,22 @@
+[% META title = 'EZ::360 - Update Article' -%]
+
+<form method='post' action='[% c.uri_for( "/article/" _ article.id _ "/update/do") %]'>
+    <fieldset>
+        <legend>Update Article</legend>
+        <p>
+            <label for='article-title'>
+                Title:
+                <input type='text' name='title' id='article-title' value='[% article.title %]' />
+            </label>
+        </p>
+        <p>
+            <label for='article-content'>
+                Content:
+                <textarea name='content' id='article-content' rows='20' cols='50' >[% article.content %]</textarea>
+            </label>
+        </p>
+    </fieldset>
+    <p>
+        <input type='submit' value='Update Article' />
+    </p>
+</form>
