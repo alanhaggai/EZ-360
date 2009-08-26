@@ -16,7 +16,12 @@ Catalyst Controller.
 
 =cut
 
-sub create : Local {
+sub create : Local : Args(0) {
+    my ( $self, $c ) = @_;
+    $c->stash( template => 'article/create.html' );
+}
+
+sub create_do : Path('create/do') : Args(0) {
     my ( $self, $c ) = @_;
 }
 
