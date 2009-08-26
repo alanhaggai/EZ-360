@@ -1,0 +1,14 @@
+[% META title = 'EZ::360 - Delete Article' -%]
+
+<form method='post' action='[% c.uri_for( "/article/" _ article.id _ "/delete/do" ) %]'>
+    <fieldset>
+        <legend>Delete Article</legend>
+        <p>
+            Are you sure you want to delete the article with the title
+            <span class='article-title'>&ldquo;[% article.title%]&rdquo;</span>?
+        </p>
+    </fieldset>
+    <p>
+        <input type='submit' value='Delete Article' />
+    </p>
+</form>

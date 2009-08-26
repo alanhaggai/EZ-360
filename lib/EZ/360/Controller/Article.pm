@@ -54,10 +54,7 @@ sub create_do : Path('create/do') : Args(0) {
     $c->response->redirect(
         $c->uri_for(
             '/error',
-            {
-                error_message =>
-                  'Error occurred while creating article.'
-            }
+            { error_message => 'Error occurred while creating article.' }
         )
     );
 }
@@ -70,10 +67,24 @@ sub id : Chained('/') : PathPart('article') : CaptureArgs(1) {
 
 sub delete : Chained('id') : PathPart('delete') : Args(0) {
     my ( $self, $c ) = @_;
+
+    $c->stash( template => 'article/delete.html' );
 }
 
 sub delete_do : Chained('id') : PathPart('delete/do') : Args(0) {
     my ( $self, $c ) = @_;
+
+    my $article = $c->stash->{article};
+    eval { $article->delete(); };
+
+    if ($@) {
+        $c->response->redirect(
+            $c->uri_for(
+                '/error',
+                { error_message => 'Error occurred while deleting article.' }
+            )
+        );
+    }
 }
 
 sub update : Chained('id') : PathPart('update') : Args(0) {
@@ -111,10 +122,7 @@ sub update_do : Chained('id') : PathPart('update/do') : Args(0) {
     $c->response->redirect(
         $c->uri_for(
             '/error',
-            {
-                error_message =>
-                  'Error occurred while updating article.'
-            }
+            { error_message => 'Error occurred while updating article.' }
         )
     );
 }
@@ -123,7 +131,8 @@ sub retrieve : Chained('id') : PathPart('retrieve') : Args(0) {
     my ( $self, $c ) = @_;
 
     unless ( $c->stash->{article} ) {
-        $c->stash( status_message => 'Error retrieving article.' );
+        $c->stash(
+            status_message => 'Error occurred while retrieving article.' );
         $c->detach('/error');
     }
 
