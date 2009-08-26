@@ -45,6 +45,10 @@ sub update_do : Chained('id') : PathPart('update/do') : Args(0) {
     my ( $self, $c ) = @_;
 }
 
+sub retrieve : Chained('id') : PathPart('retrieve') : Args(0) {
+    my ( $self, $c ) = @_;
+}
+
 =head1 AUTHOR
 
 Alan Haggai Alavi
