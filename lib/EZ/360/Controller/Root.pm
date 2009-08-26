@@ -39,6 +39,13 @@ sub default : Path {
     $c->stash( template => '404.html' );
 }
 
+sub error : Local {
+    my ( $self, $c ) = @_;
+
+    $c->response->status(500);
+    $c->stash( template => 'error.html' );
+}
+
 =head2 end
 
 Attempt to render a view, if needed.
