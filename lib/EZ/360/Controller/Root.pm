@@ -26,15 +26,17 @@ EZ::360::Controller::Root - Root Controller for EZ::360
 
 =cut
 
-sub index :Path :Args(0) {
+sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
+
     $c->stash( template => 'index.html' );
 }
 
-sub default :Path {
+sub default : Path {
     my ( $self, $c ) = @_;
-    $c->response->body( 'Page not found' );
+
     $c->response->status(404);
+    $c->stash( template => '404.html' );
 }
 
 =head2 end
@@ -43,7 +45,8 @@ Attempt to render a view, if needed.
 
 =cut
 
-sub end : ActionClass('RenderView') {}
+sub end : ActionClass('RenderView') {
+}
 
 =head1 AUTHOR
 
