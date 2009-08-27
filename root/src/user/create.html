@@ -29,13 +29,9 @@
         </p>
         <fieldset>
             <legend>Roles</legend>
-            <input type='checkbox' name='can-create-article' />Can create article<br />
-            <input type='checkbox' name='can-update-article' />Can update article<br />
-            <input type='checkbox' name='can-delete-article' />Can delete article<br />
-            <input type='checkbox' name='can-create-user' />Can create user<br />
-            <input type='checkbox' name='can-update-user' />Can update user<br />
-            <input type='checkbox' name='can-delete-user' />Can delete user<br />
-            <input type='checkbox' name='superuser' />Superuser<br />
+            [% FOREACH role IN roles -%]
+            <input type='checkbox' name='[% role.role %]' />[% role.text %]<br />
+            [% END -%]
         </fieldset>
     </fieldset>
     <p>

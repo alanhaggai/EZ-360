@@ -6,8 +6,8 @@
     <li>Real Name: [% user.realname %]</li>
     <li>Roles:
         <ul>
-            [% FOREACH user IN user.roles -%]
-            <li>[% user.role %]</li>
+            [% FOREACH role IN roles -%]
+            <li>[% role %]</li>
             [% END -%]
         </ul>
     </li>

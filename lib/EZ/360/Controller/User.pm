@@ -19,7 +19,17 @@ Catalyst Controller.
 sub create : Local : Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->stash( template => 'user/create.html' );
+    my @roles;
+    for ( $c->model('DB::Role')->all() ) {
+        my $text = $_->role();
+        $text =~ s/-/ /g;
+        push @roles, { text => $text, role => $_->role() };
+    }
+
+    $c->stash(
+        roles    => \@roles,
+        template => 'user/create.html',
+    );
 }
 
 sub create_do : Path('create/do') : Args(0) {
@@ -29,18 +39,11 @@ sub create_do : Path('create/do') : Args(0) {
     my $password = $c->request->body_params->{'password'};
     my $email    = $c->request->body_params->{'email'};
     my $realname = $c->request->body_params->{'realname'};
-    my %roles    = (
-        'can-create-article' =>
-          $c->request->body_params->{'can-create-article'},
-        'can-update-article' =>
-          $c->request->body_params->{'can-update-article'},
-        'can-delete-article' =>
-          $c->request->body_params->{'can-delete-article'},
-        'can-create-user' => $c->request->body_params->{'can-create-user'},
-        'can-update-user' => $c->request->body_params->{'can-update-user'},
-        'can-delete-user' => $c->request->body_params->{'can-delete-user'},
-        'superuser'       => $c->request->body_params->{'superuser'},
-    );
+
+    my %roles;
+    for ( $c->model('DB::Role')->all() ) {
+        $roles{ $_->role() } = $c->request->body_params->{ $_->role() };
+    }
 
     if ( $username && $password && $email ) {
         my $user;
@@ -55,7 +58,7 @@ sub create_do : Path('create/do') : Args(0) {
             );
 
             for ( keys %roles ) {
-                next unless defined $roles{$_};
+                next unless $roles{$_} eq 'on';
                 my $role_id =
                   $c->model('DB::Role')->search( { role => $_ } )->first()
                   ->id();
@@ -109,7 +112,8 @@ sub update : Chained('id') : PathPart('update') : Args(0) {
         }
         my $text = $_->role();
         $text =~ s/-/ /g;
-        push @roles, { text => $text, role => $_->role(), status => $role_status };
+        push @roles,
+          { text => $text, role => $_->role(), status => $role_status };
     }
 
     $c->stash(
@@ -121,12 +125,23 @@ sub update : Chained('id') : PathPart('update') : Args(0) {
 sub retrieve : Chained('id') : PathPart('retrieve') : Args(0) {
     my ( $self, $c ) = @_;
 
-    unless ( $c->stash->{user} ) {
+    my $user = $c->stash->{user};
+    unless ($user) {
         $c->stash( status_message => 'Error occurred while retrieving user.' );
         $c->detach('/error');
     }
 
-    $c->stash( template => 'user/retrieve.html' );
+    my @roles;
+    for ($user->roles()) {
+        my $text = $_->role();
+        $text =~ s/-/ /g;
+        push @roles, $text;
+    }
+
+    $c->stash(
+        roles    => \@roles,
+        template => 'user/retrieve.html'
+    );
 }
 
 =head1 AUTHOR
