@@ -4,4 +4,11 @@
     <li>Username: [% user.username %]</li>
     <li>E-mail: [% user.email %]</li>
     <li>Real Name: [% user.realname %]</li>
+    <li>Roles:
+        <ul>
+            [% FOREACH user IN user.roles -%]
+            <li>[% user.role %]</li>
+            [% END -%]
+        </ul>
+    </li>
 </ul>
