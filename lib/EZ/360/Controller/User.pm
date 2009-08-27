@@ -25,17 +25,22 @@ sub create : Local : Args(0) {
 sub create_do : Path('create/do') : Args(0) {
     my ( $self, $c ) = @_;
 
-    my $username           = $c->request->body_params->{'username'};
-    my $password           = $c->request->body_params->{'password'};
-    my $email              = $c->request->body_params->{'email'};
-    my $realname           = $c->request->body_params->{'realname'};
-    my $can_create_article = $c->request->body_params->{'can-create-article'};
-    my $can_update_article = $c->request->body_params->{'can-update-article'};
-    my $can_delete_article = $c->request->body_params->{'can-delete-article'};
-    my $can_create_user    = $c->request->body_params->{'can-create-user'};
-    my $can_update_user    = $c->request->body_params->{'can-update-user'};
-    my $can_delete_user    = $c->request->body_params->{'can-delete-user'};
-    my $superuser          = $c->request->body_params->{'superuser'};
+    my $username = $c->request->body_params->{'username'};
+    my $password = $c->request->body_params->{'password'};
+    my $email    = $c->request->body_params->{'email'};
+    my $realname = $c->request->body_params->{'realname'};
+    my %roles    = (
+        'can-create-article' =>
+          $c->request->body_params->{'can-create-article'},
+        'can-update-article' =>
+          $c->request->body_params->{'can-update-article'},
+        'can-delete-article' =>
+          $c->request->body_params->{'can-delete-article'},
+        'can-create-user' => $c->request->body_params->{'can-create-user'},
+        'can-update-user' => $c->request->body_params->{'can-update-user'},
+        'can-delete-user' => $c->request->body_params->{'can-delete-user'},
+        'superuser'       => $c->request->body_params->{'superuser'},
+    );
 
     if ( $username && $password && $email ) {
         my $user;
@@ -48,6 +53,14 @@ sub create_do : Path('create/do') : Args(0) {
                     realname => $realname,
                 }
             );
+
+            for ( keys %roles ) {
+                next unless defined $roles{$_};
+                my $role_id =
+                  $c->model('DB::Role')->search( { role => $_ } )->first()
+                  ->id();
+                $user->add_to_user_role( { role_id => $role_id } );
+            }
         };
 
         unless ($@) {
@@ -64,8 +77,7 @@ sub create_do : Path('create/do') : Args(0) {
 
     $c->response->redirect(
         $c->uri_for(
-            '/error',
-            { error_message => 'Error occurred while creating user.' }
+            '/error', { error_message => 'Error occurred while creating user.' }
         )
     );
 }
@@ -74,6 +86,17 @@ sub id : Chained('/') : PathPart('user') : CaptureArgs(1) {
     my ( $self, $c, $id ) = @_;
 
     $c->stash( user => $c->model('DB::User')->find($id) );
+}
+
+sub retrieve : Chained('id') : PathPart('retrieve') : Args(0) {
+    my ( $self, $c ) = @_;
+
+    unless ( $c->stash->{user} ) {
+        $c->stash( status_message => 'Error occurred while retrieving user.' );
+        $c->detach('/error');
+    }
+
+    $c->stash( template => 'user/retrieve.html' );
 }
 
 =head1 AUTHOR
