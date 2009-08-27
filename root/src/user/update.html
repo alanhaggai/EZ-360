@@ -1,0 +1,46 @@
+[% META title = 'EZ::360 - Update User' -%]
+
+<form method='post' action='[% c.uri_for( "/user/" _ user.id  _ "/update/do" ) %]'>
+    <fieldset>
+        <legend>Update User</legend>
+        <p>
+            <label for='user-username'>
+                Username:
+                <input type='text' name='username' id='user-username' value='[% user.username %]' />
+            </label>
+        </p>
+        <p>
+            <label for='user-password'>
+                Password:
+                <input type='password' name='password' id='user-password' value='[% user.password %]' />
+            </label>
+        </p>
+        <p>
+            <label for='user-password'>
+                Confirm Password:
+                <input type='password' name='confirm-password' id='user-confirm-password' value='[% user.password %]' />
+            </label>
+        </p>
+        <p>
+            <label for='user-email'>
+                E-mail:
+                <input type='text' name='email' id='user-email' value='[% user.email %]' />
+            </label>
+        </p>
+        <p>
+            <label for='user-realname'>
+                Real Name:
+                <input type='text' name='realname' id='user-realname' value='[% user.realname %]' />
+            </label>
+        </p>
+        <fieldset>
+            <legend>Roles</legend>
+            [% FOREACH role IN roles -%]
+            <input type='checkbox' name='[% role.role %]' [% role.status %] />[% role.text %]<br />
+            [% END -%]
+        </fieldset>
+    </fieldset>
+    <p>
+        <input type='submit' value='Update User' />
+    </p>
+</form>

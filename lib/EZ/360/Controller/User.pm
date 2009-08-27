@@ -88,6 +88,36 @@ sub id : Chained('/') : PathPart('user') : CaptureArgs(1) {
     $c->stash( user => $c->model('DB::User')->find($id) );
 }
 
+sub update : Chained('id') : PathPart('update') : Args(0) {
+    my ( $self, $c, $id ) = @_;
+
+    my $user = $c->stash->{user};
+    unless ($user) {
+        $c->stash( status_message =>
+              'Error occurred while trying to update nonexistent user.' );
+        $c->detach('/error');
+    }
+
+    my @roles;
+    for ( $c->model('DB::Role')->all() ) {
+        my $role_status;
+        for my $user_role ( $user->roles() ) {
+            if ( $_->role() eq $user_role->role() ) {
+                $role_status = q{checked='checked'};
+                last;
+            }
+        }
+        my $text = $_->role();
+        $text =~ s/-/ /g;
+        push @roles, { text => $text, role => $_->role(), status => $role_status };
+    }
+
+    $c->stash(
+        roles    => \@roles,
+        template => 'user/update.html',
+    );
+}
+
 sub retrieve : Chained('id') : PathPart('retrieve') : Args(0) {
     my ( $self, $c ) = @_;
 
