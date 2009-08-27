@@ -122,6 +122,70 @@ sub update : Chained('id') : PathPart('update') : Args(0) {
     );
 }
 
+sub update_do : Chained('id') : PathPart('update/do') : Args(0) {
+    my ( $self, $c, $id ) = @_;
+
+    my $user = $c->stash->{user};
+    unless ($user) {
+        $c->stash( status_message => 'Error occurred while updating user.' );
+        $c->detach('/error');
+    }
+
+    my $username         = $c->request->body_params->{'username'};
+    my $password         = $c->request->body_params->{'password'};
+    my $confirm_password = $c->request->body_params->{'confirm-password'};
+    my $email            = $c->request->body_params->{'email'};
+    my $realname         = $c->request->body_params->{'realname'};
+
+    my %roles;
+    for ( $c->model('DB::Role')->all() ) {
+        $roles{ $_->role() } = $c->request->body_params->{ $_->role() };
+    }
+
+    if (   $username
+        && $password
+        && $email
+        && ( $password eq $confirm_password ) )
+    {
+        eval {
+            $user->update(
+                {
+                    username => $username,
+                    password => $password,
+                    email    => $email,
+                    realname => $realname,
+                }
+            );
+
+            $user->user_role->delete();
+            for ( keys %roles ) {
+                next unless $roles{$_} eq 'on';
+                my $role_id =
+                  $c->model('DB::Role')->search( { role => $_ } )->first()
+                  ->id();
+                $user->add_to_user_role( { role_id => $role_id } );
+            }
+        };
+
+        unless ($@) {
+            $c->response->redirect(
+                $c->uri_for(
+                    '/user/' . $user->id() . '/retrieve',
+                    { status_message => 'User created successfully.' }
+                )
+            );
+
+            return;
+        }
+    }
+
+    $c->response->redirect(
+        $c->uri_for(
+            '/error', { error_message => 'Error occurred while updating user.' }
+        )
+    );
+}
+
 sub retrieve : Chained('id') : PathPart('retrieve') : Args(0) {
     my ( $self, $c ) = @_;
 
@@ -132,7 +196,7 @@ sub retrieve : Chained('id') : PathPart('retrieve') : Args(0) {
     }
 
     my @roles;
-    for ($user->roles()) {
+    for ( $user->roles() ) {
         my $text = $_->role();
         $text =~ s/-/ /g;
         push @roles, $text;
