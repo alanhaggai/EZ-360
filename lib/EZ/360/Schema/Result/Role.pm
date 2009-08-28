@@ -26,8 +26,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04006 @ 2009-08-28 03:05:09
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:BNaSHgZWRC/mSm7yjN/n1A
+# Created by DBIx::Class::Schema::Loader v0.04006 @ 2009-08-29 01:27:14
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:aulN9dXTdMbFi1CuyuUM2Q
 
 __PACKAGE__->has_many(
     user_role => 'EZ::360::Schema::Result::UserRole', 'role_id' 
