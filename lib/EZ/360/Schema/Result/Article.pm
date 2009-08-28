@@ -5,7 +5,7 @@ use warnings;
 
 use base 'DBIx::Class';
 
-__PACKAGE__->load_components("InflateColumn::DateTime", "Core");
+__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp", "Core");
 __PACKAGE__->table("article");
 __PACKAGE__->add_columns(
   "id",
@@ -47,8 +47,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04006 @ 2009-08-26 23:25:42
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:rWYzbAcRKbmU/3xE80KOhQ
+# Created by DBIx::Class::Schema::Loader v0.04006 @ 2009-08-28 03:05:09
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:J8MlvnSD6sUL50oDF7Z3dQ
 
 __PACKAGE__->add_columns(
     created => {

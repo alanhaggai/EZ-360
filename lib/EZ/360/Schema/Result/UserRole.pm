@@ -5,7 +5,7 @@ use warnings;
 
 use base 'DBIx::Class';
 
-__PACKAGE__->load_components("InflateColumn::DateTime", "Core");
+__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp", "Core");
 __PACKAGE__->table("user_role");
 __PACKAGE__->add_columns(
   "user_id",
@@ -23,10 +23,11 @@ __PACKAGE__->add_columns(
     size => undef,
   },
 );
+__PACKAGE__->set_primary_key("user_id", "role_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04006 @ 2009-08-26 23:25:42
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:sBZfbXf8ZL1iSDGFczmgZg
+# Created by DBIx::Class::Schema::Loader v0.04006 @ 2009-08-28 03:05:09
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:e3TpHKbaQKUQnSTMhOOb5w
 
 __PACKAGE__->belongs_to(
     user => 'EZ::360::Schema::Result::User', 'user_id'
