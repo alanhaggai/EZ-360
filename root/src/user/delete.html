@@ -1,0 +1,14 @@
+[% META title = 'EZ::360 - Delete User' -%]
+
+<form method='post' action='[% c.uri_for( "/user/" _ user.id _ "/delete/do" ) %]'>
+    <fieldset>
+        <legend>Delete User</legend>
+        <p>
+            Are you sure you want to delete the user with the username
+            <span class='user-username'>&ldquo;[% user.username%]&rdquo;</span>?
+        </p>
+    </fieldset>
+    <p>
+        <input type='submit' value='Delete User' />
+    </p>
+</form>

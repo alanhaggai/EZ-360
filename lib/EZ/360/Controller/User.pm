@@ -19,6 +19,8 @@ Catalyst Controller.
 sub create : Local : Args(0) {
     my ( $self, $c ) = @_;
 
+    # Get all existing roles to display checkboxes for each.
+    # Beautify text displayed for roles by removing hyphens.
     my @roles;
     for ( $c->model('DB::Role')->all() ) {
         my $text = $_->role();
@@ -45,6 +47,8 @@ sub create_do : Path('create/do') : Args(0) {
         $roles{ $_->role() } = $c->request->body_params->{ $_->role() };
     }
 
+    my $error_message;
+
     if ( $username && $password && $email ) {
         my $user;
         eval {
@@ -56,17 +60,24 @@ sub create_do : Path('create/do') : Args(0) {
                     realname => $realname,
                 }
             );
+        };
 
+        if ($@) {
+            $error_message = 'Error while creating user.';
+        }
+        else {
+
+            # Add to table `user_role` the roles that have been assigned to the
+            # user.
             for ( keys %roles ) {
                 next unless $roles{$_} eq 'on';
+
                 my $role_id =
                   $c->model('DB::Role')->search( { role => $_ } )->first()
                   ->id();
                 $user->add_to_user_role( { role_id => $role_id } );
             }
-        };
 
-        unless ($@) {
             $c->response->redirect(
                 $c->uri_for(
                     '/user/' . $user->id() . '/retrieve',
@@ -78,29 +89,28 @@ sub create_do : Path('create/do') : Args(0) {
         }
     }
 
+    $error_message ||= 'You did not provide a username, password or e-mail.';
     $c->response->redirect(
-        $c->uri_for(
-            '/error', { error_message => 'Error occurred while creating user.' }
-        )
-    );
+        $c->uri_for( '/error', { error_message => $error_message } ) );
 }
 
 sub id : Chained('/') : PathPart('user') : CaptureArgs(1) {
     my ( $self, $c, $id ) = @_;
 
-    $c->stash( user => $c->model('DB::User')->find($id) );
+    my $user = $c->model('DB::User')->find($id);
+    unless ($user) {
+        $c->stash( status_message => 'User does not exist.' );
+        $c->detach('/error');
+    }
+    $c->stash( user => $user );
 }
 
 sub update : Chained('id') : PathPart('update') : Args(0) {
     my ( $self, $c, $id ) = @_;
 
     my $user = $c->stash->{user};
-    unless ($user) {
-        $c->stash( status_message =>
-              'Error occurred while trying to update nonexistent user.' );
-        $c->detach('/error');
-    }
 
+    # Get all roles and select the ones that the user has.
     my @roles;
     for ( $c->model('DB::Role')->all() ) {
         my $role_status;
@@ -110,8 +120,11 @@ sub update : Chained('id') : PathPart('update') : Args(0) {
                 last;
             }
         }
+
+        # Beautify the display of roles by showing them without hyphens.
         my $text = $_->role();
         $text =~ s/-/ /g;
+
         push @roles,
           { text => $text, role => $_->role(), status => $role_status };
     }
@@ -126,10 +139,6 @@ sub update_do : Chained('id') : PathPart('update/do') : Args(0) {
     my ( $self, $c, $id ) = @_;
 
     my $user = $c->stash->{user};
-    unless ($user) {
-        $c->stash( status_message => 'Error occurred while updating user.' );
-        $c->detach('/error');
-    }
 
     my $username         = $c->request->body_params->{'username'};
     my $password         = $c->request->body_params->{'password'};
@@ -141,6 +150,8 @@ sub update_do : Chained('id') : PathPart('update/do') : Args(0) {
     for ( $c->model('DB::Role')->all() ) {
         $roles{ $_->role() } = $c->request->body_params->{ $_->role() };
     }
+
+    my $error_message;
 
     if (   $username
         && $password
@@ -156,22 +167,29 @@ sub update_do : Chained('id') : PathPart('update/do') : Args(0) {
                     realname => $realname,
                 }
             );
+        };
 
+        if ($@) {
+            $error_message = 'Error while updating user.';
+        }
+        else {
             $user->user_role->delete();
+
+            # Add to table `user_role` the roles that have been assigned to the
+            # user.
             for ( keys %roles ) {
                 next unless $roles{$_} eq 'on';
+
                 my $role_id =
                   $c->model('DB::Role')->search( { role => $_ } )->first()
                   ->id();
                 $user->add_to_user_role( { role_id => $role_id } );
             }
-        };
 
-        unless ($@) {
             $c->response->redirect(
                 $c->uri_for(
                     '/user/' . $user->id() . '/retrieve',
-                    { status_message => 'User created successfully.' }
+                    { status_message => 'User updated successfully.' }
                 )
             );
 
@@ -179,24 +197,38 @@ sub update_do : Chained('id') : PathPart('update/do') : Args(0) {
         }
     }
 
+    $error_message ||=
+      'You did not provide a username, e-mail, or failed to confirm password.';
     $c->response->redirect(
-        $c->uri_for(
-            '/error', { error_message => 'Error occurred while updating user.' }
-        )
-    );
+        $c->uri_for( '/error', { error_message => $error_message } ) );
+}
+
+sub delete : Chained('id') : PathPart('delete') : Args(0) {
+    my ( $self, $c ) = @_;
+
+    $c->stash( template => 'user/delete.html' );
+}
+
+sub delete_do : Chained('id') : PathPart('delete/do') : Args(0) {
+    my ( $self, $c ) = @_;
+
+    eval { $c->stash->{user}->delete(); };
+
+    if ($@) {
+        $c->response->redirect(
+            $c->uri_for(
+                '/error',
+                { error_message => 'Error occurred while deleting user.' }
+            )
+        );
+    }
 }
 
 sub retrieve : Chained('id') : PathPart('retrieve') : Args(0) {
     my ( $self, $c ) = @_;
 
-    my $user = $c->stash->{user};
-    unless ($user) {
-        $c->stash( status_message => 'Error occurred while retrieving user.' );
-        $c->detach('/error');
-    }
-
     my @roles;
-    for ( $user->roles() ) {
+    for ( $c->stash->{user}->roles() ) {
         my $text = $_->role();
         $text =~ s/-/ /g;
         push @roles, $text;
