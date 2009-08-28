@@ -28,6 +28,8 @@ sub create_do : Path('create/do') : Args(0) {
     my $title   = $c->request->body_params->{'title'};
     my $content = $c->request->body_params->{'content'};
 
+    my $error_message;
+
     if ( $title && $content ) {
         my $article;
         eval {
@@ -39,7 +41,10 @@ sub create_do : Path('create/do') : Args(0) {
             );
         };
 
-        unless ($@) {
+        if ($@) {
+            $error_message = 'Error while creating article.';
+        }
+        else {
             $c->response->redirect(
                 $c->uri_for(
                     '/article/' . $article->id() . '/retrieve',
@@ -51,18 +56,22 @@ sub create_do : Path('create/do') : Args(0) {
         }
     }
 
+    $error_message ||= 'You did not provide a title, or a content.';
     $c->response->redirect(
-        $c->uri_for(
-            '/error',
-            { error_message => 'Error occurred while creating article.' }
-        )
-    );
+        $c->uri_for( '/error', { error_message => $error_message } ) );
 }
 
 sub id : Chained('/') : PathPart('article') : CaptureArgs(1) {
     my ( $self, $c, $id ) = @_;
 
-    $c->stash( article => $c->model('DB::Article')->find($id) );
+    my $article = $c->model('DB::Article')->find($id);
+
+    unless ($article) {
+        $c->stash( status_message => 'Article does not exist.' );
+        $c->detach('/error');
+    }
+
+    $c->stash( article => $article );
 }
 
 sub delete : Chained('id') : PathPart('delete') : Args(0) {
@@ -74,8 +83,7 @@ sub delete : Chained('id') : PathPart('delete') : Args(0) {
 sub delete_do : Chained('id') : PathPart('delete/do') : Args(0) {
     my ( $self, $c ) = @_;
 
-    my $article = $c->stash->{article};
-    eval { $article->delete(); };
+    eval { $c->stash->{article}->delete(); };
 
     if ($@) {
         $c->response->redirect(
@@ -99,15 +107,18 @@ sub update_do : Chained('id') : PathPart('update/do') : Args(0) {
     my $title   = $c->request->body_params->{'title'};
     my $content = $c->request->body_params->{'content'};
 
+    my $error_message;
+
     if ( $title && $content ) {
         my $article = $c->stash->{article};
-        eval {
-            $article->title($title);
-            $article->content($content);
-            $article->update();
-        };
+        $article->title($title);
+        $article->content($content);
+        eval { $article->update(); };
 
-        unless ($@) {
+        if ($@) {
+            $error_message = 'Error while updating article.';
+        }
+        else {
             $c->response->redirect(
                 $c->uri_for(
                     '/article/' . $article->id() . '/retrieve',
@@ -119,22 +130,13 @@ sub update_do : Chained('id') : PathPart('update/do') : Args(0) {
         }
     }
 
+    $error_message ||= 'You did not provide a title, or a content.';
     $c->response->redirect(
-        $c->uri_for(
-            '/error',
-            { error_message => 'Error occurred while updating article.' }
-        )
-    );
+        $c->uri_for( '/error', { error_message => $error_message } ) );
 }
 
 sub retrieve : Chained('id') : PathPart('retrieve') : Args(0) {
     my ( $self, $c ) = @_;
-
-    unless ( $c->stash->{article} ) {
-        $c->stash(
-            status_message => 'Error occurred while retrieving article.' );
-        $c->detach('/error');
-    }
 
     $c->stash( template => 'article/retrieve.html' );
 }
