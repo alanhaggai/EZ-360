@@ -1,7 +1,10 @@
 [% META title = 'List Users' -%]
 
 <ul>
-[% FOREACH user IN users -%]
+    [% FOREACH user IN users -%]
+    <li>
+        <img src='[% user.gravatar | html %]' alt='Gravatar' />
+    </li>
     <li>
         <a href='[% c.uri_for( "/user/" _ user.id _ "/retrieve" ) %]'>[% user.username %]</a>
     </li>
@@ -15,5 +18,5 @@
             </li>
         </ul>
     </li>
-[% END -%]
+    [% END -%]
 </ul>

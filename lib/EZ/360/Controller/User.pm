@@ -3,6 +3,7 @@ package EZ::360::Controller::User;
 use strict;
 use warnings;
 use parent 'Catalyst::Controller';
+use Gravatar::URL;
 
 =head1 NAME
 
@@ -97,8 +98,22 @@ sub create_do : Path('create/do') : Args(0) {
 sub list : Local : Args(0) {
     my ( $self, $c ) = @_;
 
+    my @users;
+    for ( $c->model('DB::User')->all() ) {
+        push @users,
+          {
+            id       => $_->id(),
+            username => $_->username(),
+            gravatar => gravatar_url(
+                email   => $_->email(),
+                size    => 40,
+                default => 'identicon'
+            ),
+          };
+    }
+
     $c->stash(
-        users    => [ $c->model('DB::User')->all() ],
+        users    => \@users,
         template => 'user/list.html'
     );
 }
@@ -234,8 +249,7 @@ sub delete_do : Chained('id') : PathPart('delete/do') : Args(0) {
     else {
         $c->response->redirect(
             $c->uri_for(
-                '/user/list',
-                { status_message => 'User deleted successfully.' }
+                '/user/list', { status_message => 'User deleted successfully.' }
             )
         );
     }

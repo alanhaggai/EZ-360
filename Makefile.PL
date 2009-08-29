@@ -15,6 +15,7 @@ requires 'Config::General'; # This should reflect the config file format you've 
                  # See Catalyst::Plugin::ConfigLoader for supported formats
 
 requires 'DBIx::Class::TimeStamp';
+requires 'Gravatar::URL';
 
 catalyst;
 
