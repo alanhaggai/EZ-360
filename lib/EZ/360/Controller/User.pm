@@ -231,6 +231,14 @@ sub delete_do : Chained('id') : PathPart('delete/do') : Args(0) {
             )
         );
     }
+    else {
+        $c->response->redirect(
+            $c->uri_for(
+                '/user/list',
+                { status_message => 'User deleted successfully.' }
+            )
+        );
+    }
 }
 
 sub retrieve : Chained('id') : PathPart('retrieve') : Args(0) {
