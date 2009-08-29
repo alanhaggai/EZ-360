@@ -1,0 +1,19 @@
+[% META title = 'List Users' -%]
+
+<ul>
+[% FOREACH user IN users -%]
+    <li>
+        <a href='[% c.uri_for( "/user/" _ user.id _ "/retrieve" ) %]'>[% user.username %]</a>
+    </li>
+    <li>
+        <ul>
+            <li>
+                <a href='[% c.uri_for( "/user/" _ user.id _ "/update" ) %]'>Update</a>
+            </li>
+            <li>
+                <a href='[% c.uri_for( "/user/" _ user.id _ "/delete" ) %]'>Delete</a>
+            </li>
+        </ul>
+    </li>
+[% END -%]
+</ul>

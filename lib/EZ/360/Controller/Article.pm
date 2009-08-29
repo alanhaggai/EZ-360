@@ -61,6 +61,15 @@ sub create_do : Path('create/do') : Args(0) {
         $c->uri_for( '/error', { error_message => $error_message } ) );
 }
 
+sub list : Local : Args(0) {
+    my ( $self, $c ) = @_;
+
+    $c->stash(
+        articles => [ $c->model('DB::Article')->all() ],
+        template => 'article/list.html'
+    );
+}
+
 sub id : Chained('/') : PathPart('article') : CaptureArgs(1) {
     my ( $self, $c, $id ) = @_;
 

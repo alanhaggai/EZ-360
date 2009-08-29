@@ -1,0 +1,19 @@
+[% META title = 'List Articles' -%]
+
+<ul>
+[% FOREACH article IN articles -%]
+    <li>
+        <a href='[% c.uri_for( "/article/" _ article.id _ "/retrieve" ) %]'>[% article.title %]</a>
+    </li>
+    <li>
+        <ul>
+            <li>
+                <a href='[% c.uri_for( "/article/" _ article.id _ "/update" ) %]'>Update</a>
+            </li>
+            <li>
+                <a href='[% c.uri_for( "/article/" _ article.id _ "/delete" ) %]'>Delete</a>
+            </li>
+        </ul>
+    </li>
+[% END -%]
+</ul>
