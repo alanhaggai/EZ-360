@@ -258,8 +258,10 @@ sub delete_do : Chained('id') : PathPart('delete/do') : Args(0) {
 sub retrieve : Chained('id') : PathPart('retrieve') : Args(0) {
     my ( $self, $c ) = @_;
 
+    my $user = $c->stash->{user};
+
     my @roles;
-    for ( $c->stash->{user}->roles() ) {
+    for ( $user->roles() ) {
         my $text = $_->role();
         $text =~ s/-/ /g;
         push @roles, $text;
@@ -267,7 +269,11 @@ sub retrieve : Chained('id') : PathPart('retrieve') : Args(0) {
 
     $c->stash(
         roles    => \@roles,
-        template => 'user/retrieve.html'
+        gravatar => gravatar_url(
+            email   => $user->email(),
+            default => 'identicon'
+        ),
+        template => 'user/retrieve.html',
     );
 }
 
