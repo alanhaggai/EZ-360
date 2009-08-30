@@ -31,7 +31,7 @@ Catalyst::Helper::Model::DBIC::Schema - 0.26
 
 =head1 AUTHOR
 
-A clever guy
+Alan Haggai Alavi
 
 =head1 LICENSE
 

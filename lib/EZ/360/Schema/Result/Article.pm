@@ -5,7 +5,7 @@ use warnings;
 
 use base 'DBIx::Class';
 
-__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp", "Core");
+__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp", "EncodedColumn", "Core");
 __PACKAGE__->table("article");
 __PACKAGE__->add_columns(
   "id",
@@ -48,8 +48,8 @@ __PACKAGE__->set_primary_key("id");
 __PACKAGE__->add_unique_constraint("title_unique", ["title"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.04006 @ 2009-08-29 01:27:14
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:HXyNmsbZt/aQ9YYEmlsXjw
+# Created by DBIx::Class::Schema::Loader v0.04006 @ 2009-08-30 01:31:08
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:kbH6BhXVQ0xMvI3V1zCEPg
 
 __PACKAGE__->add_columns(
     created => {

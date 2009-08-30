@@ -165,10 +165,11 @@ sub update_do : Chained('id') : PathPart('update/do') : Args(0) {
     my $user = $c->stash->{user};
 
     my $username         = $c->request->body_params->{'username'};
-    my $password         = $c->request->body_params->{'password'};
-    my $confirm_password = $c->request->body_params->{'confirm-password'};
-    my $email            = $c->request->body_params->{'email'};
-    my $realname         = $c->request->body_params->{'realname'};
+    my $password         = $c->request->body_params->{'password'} || undef;
+    my $confirm_password = $c->request->body_params->{'confirm-password'}
+      || undef;
+    my $email    = $c->request->body_params->{'email'};
+    my $realname = $c->request->body_params->{'realname'};
 
     my %roles;
     for ( $c->model('DB::Role')->all() ) {
@@ -178,7 +179,6 @@ sub update_do : Chained('id') : PathPart('update/do') : Args(0) {
     my $error_message;
 
     if (   $username
-        && $password
         && $email
         && ( $password eq $confirm_password ) )
     {
@@ -186,11 +186,11 @@ sub update_do : Chained('id') : PathPart('update/do') : Args(0) {
             $user->update(
                 {
                     username => $username,
-                    password => $password,
                     email    => $email,
                     realname => $realname,
                 }
             );
+            $user->update( { password => $password } ) if defined $password;
         };
 
         if ($@) {
