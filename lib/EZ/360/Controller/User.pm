@@ -89,22 +89,8 @@ sub create_do : Path('create/do') : Args(0) {
 sub list : Local : Args(0) {
     my ( $self, $c ) = @_;
 
-    my @users;
-    for ( $c->model('DB::User')->all() ) {
-        push @users,
-          {
-            id       => $_->id(),
-            username => $_->username(),
-            gravatar => gravatar_url(
-                email   => $_->email(),
-                size    => 40,
-                default => 'identicon'
-            ),
-          };
-    }
-
     $c->stash(
-        users    => \@users,
+        users_rs => $c->model('DB::User'),
         template => 'user/list.html'
     );
 }

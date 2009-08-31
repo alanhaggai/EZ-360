@@ -1,9 +1,9 @@
 [% META title = 'List Users' -%]
 
 <ul>
-    [% FOREACH user IN users -%]
+    [% WHILE ( user = users_rs.next() ) -%]
     <li>
-        <img src='[% user.gravatar | html %]' alt='Gravatar' />
+        <img src='[% user.gravatar(100) | html %]' alt='Gravatar' />
     </li>
     <li>
         <a href='[% c.uri_for( "/user/" _ user.id _ "/retrieve" ) %]'>[% user.username %]</a>
