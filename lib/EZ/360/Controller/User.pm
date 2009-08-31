@@ -109,29 +109,8 @@ sub id : Chained('/') : PathPart('user') : CaptureArgs(1) {
 sub update : Chained('id') : PathPart('update') : Args(0) {
     my ( $self, $c, $id ) = @_;
 
-    my $user = $c->stash->{user};
-
-    # Get all roles and select the ones that the user has.
-    my @roles;
-    for ( $c->model('DB::Role')->all() ) {
-        my $role_status;
-        for my $user_role ( $user->roles() ) {
-            if ( $_->role() eq $user_role->role() ) {
-                $role_status = q{checked='checked'};
-                last;
-            }
-        }
-
-        # Beautify the display of roles by showing them without hyphens.
-        my $text = $_->role();
-        $text =~ s/-/ /g;
-
-        push @roles,
-          { text => $text, role => $_->role(), status => $role_status };
-    }
-
     $c->stash(
-        roles    => \@roles,
+        roles_rs => $c->model('DB::Role'),
         template => 'user/update.html',
     );
 }

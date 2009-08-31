@@ -35,8 +35,15 @@
         </p>
         <fieldset>
             <legend>Roles</legend>
-            [% FOREACH role IN roles -%]
-            <input type='checkbox' name='[% role.role %]' [% role.status %] />[% role.text %]<br />
+            [% WHILE ( role = roles_rs.next() ) -%]
+                [% FOR user_role IN user.roles -%]
+                    [% role_status = undef -%]
+                    [% IF role.role == user_role.role -%]
+                        [% role_status = ' checked=\'checked\'' -%]
+                        [% LAST -%]
+                    [% END -%]
+                [% END -%]
+                <input type='checkbox' name='[% role.role %]'[% role_status %] />[% role.role.replace( '-', ' ' ) %]<br />
             [% END -%]
         </fieldset>
     </fieldset>
