@@ -16,6 +16,11 @@ requires 'Config::General'; # This should reflect the config file format you've 
 
 requires 'DBIx::Class::TimeStamp';
 requires 'Gravatar::URL';
+requires 'Catalyst::Plugin::Authentication';
+requires 'Catalyst::Plugin::Authorization::Roles';
+requires 'Catalyst::Plugin::Session';
+requires 'Catalyst::Plugin::Session::Store::FastMmap';
+requires 'Catalyst::Plugin::Session::State::Cookie';
 
 catalyst;
 

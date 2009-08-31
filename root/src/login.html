@@ -1,0 +1,22 @@
+[% META title = 'EZ::360 - Login' -%]
+
+<form method='post' action='[% c.uri_for("/login/do") %]'>
+    <fieldset>
+        <legend>Login</legend>
+        <p>
+            <label for='user-username'>
+                Username:
+                <input type='text' name='username' id='user-username' />
+            </label>
+        </p>
+        <p>
+            <label for='user-password'>
+                Password:
+                <input type='password' name='password' id='user-password' />
+            </label>
+        </p>
+    </fieldset>
+    <p>
+        <input type='submit' value='Login' />
+    </p>
+</form>

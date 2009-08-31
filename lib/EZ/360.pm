@@ -14,9 +14,17 @@ use Catalyst::Runtime 5.80;
 #                 directory
 
 use parent qw/Catalyst/;
-use Catalyst qw/-Debug
-                ConfigLoader
-                Static::Simple/;
+use Catalyst qw(
+  -Debug
+  ConfigLoader
+  Static::Simple
+
+  Authentication
+  Authorization::Roles
+  Session
+  Session::Store::FastMmap
+  Session::State::Cookie
+);
 our $VERSION = '0.01';
 
 # Configure the application.
@@ -28,11 +36,24 @@ our $VERSION = '0.01';
 # with an external configuration file acting as an override for
 # local deployment.
 
-__PACKAGE__->config( name => 'EZ::360' );
+__PACKAGE__->config(
+    {
+        name                     => 'EZ::360',
+        'Plugin::Authentication' => {
+            default => {
+                class              => 'SimpleDB',
+                user_model         => 'DB::User',
+                password_type      => 'self_check',
+                password_hash_type => 'SHA-1',
+                role_relation      => 'roles',
+                role_field         => 'role',
+            },
+        },
+    }
+);
 
 # Start the application
 __PACKAGE__->setup();
-
 
 =head1 NAME
 
