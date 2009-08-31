@@ -33,57 +33,40 @@ sub create_do : Path('create/do') : Args(0) {
     my $password = $c->request->body_params->{'password'};
     my $email    = $c->request->body_params->{'email'};
     my $realname = $c->request->body_params->{'realname'};
-
-    my %roles;
-    for ( $c->model('DB::Role')->all() ) {
-        $roles{ $_->role() } = $c->request->body_params->{ $_->role() };
-    }
+    my $roles    = $c->request->body_params->{'role'};
 
     my $error_message;
-
     if ( $username && $password && $email ) {
         my $user;
         eval {
             $user = $c->model('DB::User')->create(
                 {
-                    username => $username,
-                    password => $password,
-                    email    => $email,
-                    realname => $realname,
+                    username  => $username,
+                    password  => $password,
+                    email     => $email,
+                    realname  => $realname,
                 }
             );
+            $user->set_all_roles($roles);
         };
 
         if ($@) {
             $error_message = 'Error while creating user.';
         }
         else {
-
-            # Add to table `user_role` the roles that have been assigned to the
-            # user.
-            for ( keys %roles ) {
-                next unless $roles{$_} eq 'on';
-
-                my $role_id =
-                  $c->model('DB::Role')->search( { role => $_ } )->first()
-                  ->id();
-                $user->add_to_user_role( { role_id => $role_id } );
-            }
-
             $c->response->redirect(
                 $c->uri_for(
                     '/user/' . $user->id() . '/retrieve',
                     { status_message => 'User created successfully.' }
                 )
             );
-
-            return;
         }
     }
-
-    $error_message ||= 'You did not provide a username, password or e-mail.';
-    $c->response->redirect(
-        $c->uri_for( '/error', { error_message => $error_message } ) );
+    else {
+        $error_message ||= 'You did not provide a username, password or e-mail.';
+        $c->response->redirect(
+            $c->uri_for( '/error', { error_message => $error_message } ) );
+    }
 }
 
 sub list : Local : Args(0) {
