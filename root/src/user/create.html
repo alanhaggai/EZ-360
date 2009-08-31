@@ -29,8 +29,8 @@
         </p>
         <fieldset>
             <legend>Roles</legend>
-            [% FOREACH role IN roles -%]
-            <input type='checkbox' name='[% role.role %]' />[% role.text %]<br />
+            [% WHILE ( role = roles_rs.next() ) -%]
+            <input type='checkbox' name='role' value='[% role.id %]' />[% role.role.replace( '-', ' ' ) -%]<br />
             [% END -%]
         </fieldset>
     </fieldset>

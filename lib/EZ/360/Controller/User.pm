@@ -20,17 +20,8 @@ Catalyst Controller.
 sub create : Local : Args(0) {
     my ( $self, $c ) = @_;
 
-    # Get all existing roles to display checkboxes for each.
-    # Beautify text displayed for roles by removing hyphens.
-    my @roles;
-    for ( $c->model('DB::Role')->all() ) {
-        my $text = $_->role();
-        $text =~ s/-/ /g;
-        push @roles, { text => $text, role => $_->role() };
-    }
-
     $c->stash(
-        roles    => \@roles,
+        roles_rs => $c->model('DB::Role'),
         template => 'user/create.html',
     );
 }
