@@ -1,6 +1,6 @@
 [% META title = 'EZ::360 - Update User' -%]
 
-<form method='post' action='[% c.uri_for( "/user/" _ user.id  _ "/update/do" ) %]'>
+<form method='post' action='[% c.uri_for( "/user/" _ user.id  _ "/update" ) %]'>
     <fieldset>
         <legend>Update User</legend>
         <p>
@@ -16,7 +16,7 @@
             </label>
         </p>
         <p>
-            <label for='user-password'>
+            <label for='confirm-password'>
                 Confirm Password:
                 <input type='password' name='confirm-password' id='user-confirm-password' value='' />
             </label>
@@ -38,12 +38,12 @@
             [% WHILE ( role = roles_rs.next() ) -%]
                 [% FOR user_role IN user.roles -%]
                     [% role_status = undef -%]
-                    [% IF role.role == user_role.role -%]
+                    [% IF role.id == user_role.id -%]
                         [% role_status = ' checked=\'checked\'' -%]
                         [% LAST -%]
                     [% END -%]
                 [% END -%]
-                <input type='checkbox' name='[% role.role %]'[% role_status %] />[% role.role.replace( '-', ' ' ) %]<br />
+                <input type='checkbox' name='role' value='[% role.id %]'[% role_status %] />[% role.role.replace( '-', ' ' ) %]<br />
             [% END -%]
         </fieldset>
     </fieldset>

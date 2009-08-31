@@ -19,46 +19,45 @@ Catalyst Controller.
 sub create : Local : Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->stash( template => 'article/create.html' );
-}
+    if ( lc $c->request->method() eq 'post' ) {
+        my $title   = $c->request->body_params->{'title'};
+        my $content = $c->request->body_params->{'content'};
 
-sub create_do : Path('create/do') : Args(0) {
-    my ( $self, $c ) = @_;
+        my $error_message;
 
-    my $title   = $c->request->body_params->{'title'};
-    my $content = $c->request->body_params->{'content'};
+        if ( $title && $content ) {
+            my $article;
+            eval {
+                $article = $c->model('DB::Article')->create(
+                    {
+                        title   => $title,
+                        content => $content,
+                    }
+                );
+            };
 
-    my $error_message;
+            if ($@) {
+                $error_message = 'Error while creating article.';
+            }
+            else {
+                $c->response->redirect(
+                    $c->uri_for(
+                        '/article/' . $article->id() . '/retrieve',
+                        { status_message => 'Article created successfully.' }
+                    )
+                );
 
-    if ( $title && $content ) {
-        my $article;
-        eval {
-            $article = $c->model('DB::Article')->create(
-                {
-                    title   => $title,
-                    content => $content,
-                }
-            );
-        };
-
-        if ($@) {
-            $error_message = 'Error while creating article.';
+                return;
+            }
         }
-        else {
-            $c->response->redirect(
-                $c->uri_for(
-                    '/article/' . $article->id() . '/retrieve',
-                    { status_message => 'Article created successfully.' }
-                )
-            );
 
-            return;
-        }
+        $error_message ||= 'You did not provide a title, or a content.';
+        $c->response->redirect(
+            $c->uri_for( '/error', { error_message => $error_message } ) );
     }
-
-    $error_message ||= 'You did not provide a title, or a content.';
-    $c->response->redirect(
-        $c->uri_for( '/error', { error_message => $error_message } ) );
+    else {
+        $c->stash( template => 'article/create.html' );
+    }
 }
 
 sub list : Local : Args(0) {
@@ -86,70 +85,68 @@ sub id : Chained('/') : PathPart('article') : CaptureArgs(1) {
 sub delete : Chained('id') : PathPart('delete') : Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->stash( template => 'article/delete.html' );
-}
+    if ( lc $c->request->method() eq 'post' ) {
+        eval { $c->stash->{article}->delete(); };
 
-sub delete_do : Chained('id') : PathPart('delete/do') : Args(0) {
-    my ( $self, $c ) = @_;
-
-    eval { $c->stash->{article}->delete(); };
-
-    if ($@) {
-        $c->response->redirect(
-            $c->uri_for(
-                '/error',
-                { error_message => 'Error occurred while deleting article.' }
-            )
-        );
+        if ($@) {
+            $c->response->redirect(
+                $c->uri_for(
+                    '/error',
+                    { error_message => 'Error occurred while deleting article.' }
+                )
+            );
+        }
+        else {
+            $c->response->redirect(
+                $c->uri_for(
+                    '/article/list',
+                    { status_message => 'Article deleted successfully.' }
+                )
+            );
+        }
     }
     else {
-        $c->response->redirect(
-            $c->uri_for(
-                '/article/list',
-                { status_message => 'Article deleted successfully.' }
-            )
-        );
+        $c->stash( template => 'article/delete.html' );
     }
 }
 
 sub update : Chained('id') : PathPart('update') : Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->stash( template => 'article/update.html' );
-}
+    if ( lc $c->request->method() eq 'post' ) {
+        my $title   = $c->request->body_params->{'title'};
+        my $content = $c->request->body_params->{'content'};
 
-sub update_do : Chained('id') : PathPart('update/do') : Args(0) {
-    my ( $self, $c ) = @_;
+        my $error_message;
 
-    my $title   = $c->request->body_params->{'title'};
-    my $content = $c->request->body_params->{'content'};
+        if ( $title && $content ) {
+            my $article = $c->stash->{article};
+            $article->title($title);
+            $article->content($content);
+            eval { $article->update(); };
 
-    my $error_message;
+            if ($@) {
+                $error_message = 'Error while updating article.';
+            }
+            else {
+                $c->response->redirect(
+                    $c->uri_for(
+                        '/article/' . $article->id() . '/retrieve',
+                        { status_message => 'Article updated successfully.' }
+                    )
+                );
 
-    if ( $title && $content ) {
-        my $article = $c->stash->{article};
-        $article->title($title);
-        $article->content($content);
-        eval { $article->update(); };
-
-        if ($@) {
-            $error_message = 'Error while updating article.';
+                return;
+            }
         }
-        else {
-            $c->response->redirect(
-                $c->uri_for(
-                    '/article/' . $article->id() . '/retrieve',
-                    { status_message => 'Article updated successfully.' }
-                )
-            );
 
-            return;
-        }
+        $error_message ||= 'You did not provide a title, or a content.';
+        $c->response->redirect(
+            $c->uri_for( '/error', { error_message => $error_message } ) );
     }
-
-    $error_message ||= 'You did not provide a title, or a content.';
-    $c->response->redirect(
-        $c->uri_for( '/error', { error_message => $error_message } ) );
+    else {
+        $c->stash( template => 'article/update.html' );
+    }
 }
 
 sub retrieve : Chained('id') : PathPart('retrieve') : Args(0) {

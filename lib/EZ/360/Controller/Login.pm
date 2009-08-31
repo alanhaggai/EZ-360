@@ -23,37 +23,40 @@ Catalyst Controller.
 sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->stash( template => 'login.html' );
-}
+    if ( lc $c->request->method() eq 'post' ) {
+        my $username = $c->request->body_params->{'username'};
+        my $password = $c->request->body_params->{'password'};
 
-sub login_do : Path('do') : Args(0) {
-    my ( $self, $c ) = @_;
-
-    my $username = $c->request->body_params->{'username'};
-    my $password = $c->request->body_params->{'password'};
-
-    if (
-        $c->authenticate(
-            {
-                username => $username,
-                password => $password,
-            }
-        )
-      )
-    {
-        $c->response->redirect( $c->uri_for('/',
-            { status_message => 'You have logged in successfully.' } ) );
-    }
-    else {
-        $c->response->redirect(
-            $c->uri_for(
-                '/error/',
+        if (
+            $c->authenticate(
                 {
-                    error_message =>
-                      'The username or password you entered is incorrect.'
+                    username => $username,
+                    password => $password,
                 }
             )
-        );
+          )
+        {
+            $c->response->redirect(
+                $c->uri_for(
+                    '/',
+                    { status_message => 'You have logged in successfully.' }
+                )
+            );
+        }
+        else {
+            $c->response->redirect(
+                $c->uri_for(
+                    '/error/',
+                    {
+                        error_message =>
+                          'The username or password you entered is incorrect.'
+                    }
+                )
+            );
+        }
+    }
+    else {
+        $c->stash( template => 'login.html' );
     }
 }
 

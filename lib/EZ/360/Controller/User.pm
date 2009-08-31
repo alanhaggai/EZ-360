@@ -20,52 +20,52 @@ Catalyst Controller.
 sub create : Local : Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->stash(
-        roles_rs => $c->model('DB::Role'),
-        template => 'user/create.html',
-    );
-}
+    if ( lc $c->request->method() eq 'post' ) {
+        my $username = $c->request->body_params->{'username'};
+        my $password = $c->request->body_params->{'password'};
+        my $email    = $c->request->body_params->{'email'};
+        my $realname = $c->request->body_params->{'realname'};
+        my $roles    = $c->request->body_params->{'role'};
 
-sub create_do : Path('create/do') : Args(0) {
-    my ( $self, $c ) = @_;
+        my $error_message;
+        if ( $username && $password && $email ) {
+            my $user;
+            eval {
+                $user = $c->model('DB::User')->create(
+                    {
+                        username => $username,
+                        password => $password,
+                        email    => $email,
+                        realname => $realname,
+                    }
+                );
+                $user->set_all_roles($roles);
+            };
 
-    my $username = $c->request->body_params->{'username'};
-    my $password = $c->request->body_params->{'password'};
-    my $email    = $c->request->body_params->{'email'};
-    my $realname = $c->request->body_params->{'realname'};
-    my $roles    = $c->request->body_params->{'role'};
-
-    my $error_message;
-    if ( $username && $password && $email ) {
-        my $user;
-        eval {
-            $user = $c->model('DB::User')->create(
-                {
-                    username  => $username,
-                    password  => $password,
-                    email     => $email,
-                    realname  => $realname,
-                }
-            );
-            $user->set_all_roles($roles);
-        };
-
-        if ($@) {
-            $error_message = 'Error while creating user.';
+            if ($@) {
+                $error_message = 'Error while creating user.';
+            }
+            else {
+                $c->response->redirect(
+                    $c->uri_for(
+                        '/user/' . $user->id() . '/retrieve',
+                        { status_message => 'User created successfully.' }
+                    )
+                );
+            }
         }
         else {
+            $error_message ||=
+              'You did not provide a username, password or e-mail.';
             $c->response->redirect(
-                $c->uri_for(
-                    '/user/' . $user->id() . '/retrieve',
-                    { status_message => 'User created successfully.' }
-                )
-            );
+                $c->uri_for( '/error', { error_message => $error_message } ) );
         }
     }
     else {
-        $error_message ||= 'You did not provide a username, password or e-mail.';
-        $c->response->redirect(
-            $c->uri_for( '/error', { error_message => $error_message } ) );
+        $c->stash(
+            roles_rs => $c->model('DB::Role'),
+            template => 'user/create.html',
+        );
     }
 }
 
@@ -92,106 +92,88 @@ sub id : Chained('/') : PathPart('user') : CaptureArgs(1) {
 sub update : Chained('id') : PathPart('update') : Args(0) {
     my ( $self, $c, $id ) = @_;
 
-    $c->stash(
-        roles_rs => $c->model('DB::Role'),
-        template => 'user/update.html',
-    );
-}
+    if ( lc $c->request->method() eq 'post' ) {
+        my $user = $c->stash->{user};
 
-sub update_do : Chained('id') : PathPart('update/do') : Args(0) {
-    my ( $self, $c, $id ) = @_;
+        my $username         = $c->request->body_params->{'username'};
+        my $password         = $c->request->body_params->{'password'};
+        my $confirm_password = $c->request->body_params->{'confirm-password'};
+        my $email            = $c->request->body_params->{'email'};
+        my $realname         = $c->request->body_params->{'realname'};
+        my $roles            = $c->request->body_params->{'role'};
 
-    my $user = $c->stash->{user};
+        my $error_message;
 
-    my $username         = $c->request->body_params->{'username'};
-    my $password         = $c->request->body_params->{'password'} || undef;
-    my $confirm_password = $c->request->body_params->{'confirm-password'}
-      || undef;
-    my $email    = $c->request->body_params->{'email'};
-    my $realname = $c->request->body_params->{'realname'};
+        if (   $username
+            && $email
+            && ( $password eq $confirm_password ) )
+        {
+            eval {
+                $user->update(
+                    {
+                        username => $username,
+                        email    => $email,
+                        realname => $realname,
+                    }
+                );
+                $user->update( { password => $password } ) if $password;
+                $user->set_all_roles($roles);
+            };
 
-    my %roles;
-    for ( $c->model('DB::Role')->all() ) {
-        $roles{ $_->role() } = $c->request->body_params->{ $_->role() };
-    }
-
-    my $error_message;
-
-    if (   $username
-        && $email
-        && ( $password eq $confirm_password ) )
-    {
-        eval {
-            $user->update(
-                {
-                    username => $username,
-                    email    => $email,
-                    realname => $realname,
-                }
-            );
-            $user->update( { password => $password } ) if defined $password;
-        };
-
-        if ($@) {
-            $error_message = 'Error while updating user.';
-        }
-        else {
-            $user->user_role->delete();
-
-            # Add to table `user_role` the roles that have been assigned to the
-            # user.
-            for ( keys %roles ) {
-                next unless $roles{$_} eq 'on';
-
-                my $role_id =
-                  $c->model('DB::Role')->search( { role => $_ } )->first()
-                  ->id();
-                $user->add_to_user_role( { role_id => $role_id } );
+            if ($@) {
+                $error_message = 'Error while updating user.';
             }
+            else {
+                $c->response->redirect(
+                    $c->uri_for(
+                        '/user/' . $user->id() . '/retrieve',
+                        { status_message => 'User updated successfully.' }
+                    )
+                );
 
-            $c->response->redirect(
-                $c->uri_for(
-                    '/user/' . $user->id() . '/retrieve',
-                    { status_message => 'User updated successfully.' }
-                )
-            );
-
-            return;
+                return;
+            }
         }
-    }
 
-    $error_message ||=
-      'You did not provide a username, e-mail, or failed to confirm password.';
-    $c->response->redirect(
-        $c->uri_for( '/error', { error_message => $error_message } ) );
+        $error_message ||=
+'You did not provide a username, e-mail, or failed to confirm password.';
+        $c->response->redirect(
+            $c->uri_for( '/error', { error_message => $error_message } ) );
+    }
+    else {
+        $c->stash(
+            roles_rs => $c->model('DB::Role'),
+            template => 'user/update.html',
+        );
+    }
 }
 
 sub delete : Chained('id') : PathPart('delete') : Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->stash( template => 'user/delete.html' );
-}
+    if ( lc $c->request->method() eq 'post' ) {
+        eval { $c->stash->{user}->delete(); };
 
-sub delete_do : Chained('id') : PathPart('delete/do') : Args(0) {
-    my ( $self, $c ) = @_;
-
-    eval { $c->stash->{user}->delete(); };
-
-    if ($@) {
-        $c->response->redirect(
-            $c->uri_for(
-                '/error',
-                { error_message => 'Error occurred while deleting user.' }
-            )
-        );
+        if ($@) {
+            $c->response->redirect(
+                $c->uri_for(
+                    '/error',
+                    { error_message => 'Error occurred while deleting user.' }
+                )
+            );
+        }
+        else {
+            $c->response->redirect(
+                $c->uri_for(
+                    '/user/list', { status_message => 'User deleted successfully.' }
+                )
+            );
+        }
     }
     else {
-        $c->response->redirect(
-            $c->uri_for(
-                '/user/list', { status_message => 'User deleted successfully.' }
-            )
-        );
+        $c->stash( template => 'user/delete.html' );
     }
+
 }
 
 sub retrieve : Chained('id') : PathPart('retrieve') : Args(0) {
