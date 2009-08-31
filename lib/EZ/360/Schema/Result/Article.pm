@@ -48,8 +48,8 @@ __PACKAGE__->set_primary_key("id");
 __PACKAGE__->add_unique_constraint("title_unique", ["title"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.04006 @ 2009-08-30 01:31:08
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:kbH6BhXVQ0xMvI3V1zCEPg
+# Created by DBIx::Class::Schema::Loader v0.04006 @ 2009-09-01 05:20:35
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:/0SvFGxvPv7zpGHI1cvgew
 
 __PACKAGE__->add_columns(
     created => {

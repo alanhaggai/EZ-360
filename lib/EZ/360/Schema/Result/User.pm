@@ -45,10 +45,12 @@ __PACKAGE__->add_columns(
   },
 );
 __PACKAGE__->set_primary_key("id");
+__PACKAGE__->add_unique_constraint("username_unique", ["username"]);
+__PACKAGE__->add_unique_constraint("email_unique", ["email"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.04006 @ 2009-08-30 01:31:08
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:58RQ7u0lxcVZAzkb4iRLzg
+# Created by DBIx::Class::Schema::Loader v0.04006 @ 2009-09-01 05:20:35
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:lvMk7YFQM42ydBfTq5otoQ
 
 __PACKAGE__->add_columns(
     password => {
