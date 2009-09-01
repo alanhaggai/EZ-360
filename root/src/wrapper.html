@@ -6,7 +6,11 @@
 
     <head>
         <title>[% template.title %]</title>
-        <link rel='stylesheet' href='[% c.uri_for("/static/css/style.css") %]' />
+        <link href="/static/css/screen.css" media="screen, projection" rel="stylesheet" type="text/css" />
+        <link href="/static/css/print.css" media="print" rel="stylesheet" type="text/css" />
+        <!--[if lt IE 8]>
+            <link href="/static/css/ie.css" media="screen, projection" rel="stylesheet" type="text/css" />
+        <![endif]-->
     </head>
 
     <body>
