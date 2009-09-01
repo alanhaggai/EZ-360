@@ -41,12 +41,18 @@ __PACKAGE__->config(
         name                     => 'EZ::360',
         'Plugin::Authentication' => {
             default => {
-                class              => 'SimpleDB',
-                user_model         => 'DB::User',
-                password_type      => 'self_check',
-                password_hash_type => 'SHA-1',
-                role_relation      => 'roles',
-                role_field         => 'role',
+                credential => {
+                    class              => 'Password',
+                    password_type      => 'self_check',
+                    password_hash_type => 'SHA-1',
+                },
+                store => {
+                    class                     => 'DBIx::Class',
+                    user_model                => 'DB::User',
+                    role_relation             => 'roles',
+                    role_field                => 'role',
+                    use_userdata_from_session => 0,
+                },
             },
         },
     }
