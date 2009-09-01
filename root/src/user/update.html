@@ -3,51 +3,44 @@
 <form method='post' action='[% c.uri_for( "/user/" _ user.id  _ "/update" ) %]'>
     <fieldset>
         <legend>Update User</legend>
-        <p>
-            <label for='user-username'>
-                Username:
-                <input type='text' name='username' id='user-username' value='[% user.username %]' />
-            </label>
-        </p>
-        <p>
-            <label for='user-password'>
-                Password:
-                <input type='password' name='password' id='user-password' value='' />
-            </label>
-        </p>
-        <p>
-            <label for='confirm-password'>
-                Confirm Password:
-                <input type='password' name='confirm-password' id='user-confirm-password' value='' />
-            </label>
-        </p>
-        <p>
-            <label for='user-email'>
-                E-mail:
-                <input type='text' name='email' id='user-email' value='[% user.email %]' />
-            </label>
-        </p>
-        <p>
-            <label for='user-realname'>
-                Real Name:
-                <input type='text' name='realname' id='user-realname' value='[% user.realname %]' />
-            </label>
-        </p>
+        <div class='field user-username'>
+            <label for='user-username'>Username:</label>
+            <input type='text' name='username' id='user-username' value='[% user.username %]' />
+        </div>
+        <div class='field user-password'>
+            <label for='user-password'>Password:</label>
+            <input type='password' name='password' id='user-password' value='' />
+        </div>
+        <div class='field user-confirm-password'>
+            <label for='confirm-password'>Confirm Password:</label>
+            <input type='password' name='confirm-password' id='user-confirm-password' value='' />
+        </div>
+        <div class='field user-email'>
+            <label for='user-email'>E-mail:</label>
+            <input type='text' name='email' id='user-email' value='[% user.email %]' />
+        </div>
+        <div class='field user-realname'>
+            <label for='user-realname'>Real Name:</label>
+            <input type='text' name='realname' id='user-realname' value='[% user.realname %]' />
+        </div>
         <fieldset>
             <legend>Roles</legend>
             [% WHILE ( role = roles_rs.next() ) -%]
-                [% FOR user_role IN user.roles -%]
-                    [% role_status = undef -%]
-                    [% IF role.id == user_role.id -%]
-                        [% role_status = ' checked=\'checked\'' -%]
-                        [% LAST -%]
-                    [% END -%]
-                [% END -%]
-                <input type='checkbox' name='role' value='[% role.id %]'[% role_status %] />[% role.role.replace( '-', ' ' ) %]<br />
-            [% END -%]
+                [%- FOR user_role IN user.roles -%]
+                    [%- role_status = undef -%]
+                    [%- IF role.id == user_role.id -%]
+                        [%- role_status = ' checked=\'checked\'' -%]
+                        [%- LAST -%]
+                    [%- END -%]
+                [%- END %]
+                <div class='field user-role'>
+                    <input type='checkbox' name='role' id='user-role-[% role.id %]' value='[% role.id %]'[% role_status %] />
+                    <label for='user-role-[% role.id %]'>[% role.role.replace( '-', ' ' ) %]</label>
+                </div>
+            [% END %]
         </fieldset>
+        <div class='button user-update'>
+            <input type='submit' value='Update User' />
+        </div>
     </fieldset>
-    <p>
-        <input type='submit' value='Update User' />
-    </p>
 </form>

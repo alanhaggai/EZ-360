@@ -3,12 +3,12 @@
 <form method='post' action='[% c.uri_for( "/article/" _ article.id _ "/delete" ) %]'>
     <fieldset>
         <legend>Delete Article</legend>
-        <p>
+        <div class='field article-delete'>
             Are you sure you want to delete the article with the title
-            <span class='article-title'>&ldquo;[% article.title%]&rdquo;</span>?
-        </p>
+            <em class='article-title'>[% article.title%]</em>?
+        </div>
+        <div class='button article-delete-confirm'>
+            <input type='submit' value='Delete Article' />
+        </div>
     </fieldset>
-    <p>
-        <input type='submit' value='Delete Article' />
-    </p>
 </form>

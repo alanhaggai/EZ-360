@@ -21,11 +21,14 @@
         </div>
 
         <div id='content'>
-            [% status_message = status_message || c.request.params.status_message -%]
-            [% IF status_message -%]
-            <div class='status-message'>[% status_message -%]</div>
-            [% END -%]
-            [% content -%]
+
+            [%- status_message = status_message || c.request.params.status_message -%]
+            [%- IF status_message -%]
+            <div class='status-message'>[% status_message %]</div>
+            [%- END -%]
+
+            [%- content -%]
+
         </div>
 
         <div id='footer'>

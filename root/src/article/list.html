@@ -1,19 +1,19 @@
 [% META title = 'List Articles' -%]
 
-<ul>
-[% FOREACH article IN articles -%]
-    <li>
+<ul class='article-list'>
+    [% FOREACH article IN articles -%]
+    <li class='article-title'>
         <a href='[% c.uri_for( "/article/" _ article.id _ "/retrieve" ) %]'>[% article.title %]</a>
     </li>
     <li>
-        <ul>
-            <li>
+        <ol class='article-action'>
+            <li class='article-update'>
                 <a href='[% c.uri_for( "/article/" _ article.id _ "/update" ) %]'>Update</a>
             </li>
-            <li>
+            <li class='article-delete'>
                 <a href='[% c.uri_for( "/article/" _ article.id _ "/delete" ) %]'>Delete</a>
             </li>
-        </ul>
+        </ol>
     </li>
-[% END -%]
+    [% END -%]
 </ul>

@@ -3,12 +3,12 @@
 <form method='post' action='[% c.uri_for( "/user/" _ user.id _ "/delete" ) %]'>
     <fieldset>
         <legend>Delete User</legend>
-        <p>
+        <div class='field user-username'>
             Are you sure you want to delete the user with the username
-            <span class='user-username'>&ldquo;[% user.username%]&rdquo;</span>?
-        </p>
+            <em class='user-username'>[% user.username%]</em>?
+        </div>
+        <div class='button user-delete'>
+            <input type='submit' value='Delete User' />
+        </div>
     </fieldset>
-    <p>
-        <input type='submit' value='Delete User' />
-    </p>
 </form>

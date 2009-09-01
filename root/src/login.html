@@ -3,20 +3,16 @@
 <form method='post' action='[% c.uri_for("/login") %]'>
     <fieldset>
         <legend>Login</legend>
-        <p>
-            <label for='user-username'>
-                Username:
-                <input type='text' name='username' id='user-username' />
-            </label>
-        </p>
-        <p>
-            <label for='user-password'>
-                Password:
-                <input type='password' name='password' id='user-password' />
-            </label>
-        </p>
+        <div class='field user-username'>
+            <label for='user-username'>Username:</label>
+            <input type='text' name='username' id='user-username' />
+        </div>
+        <div class='field user-password'>
+            <label for='user-password'>Password:</label>
+            <input type='password' name='password' id='user-password' />
+        </div>
+        <div class='button login'>
+            <input type='submit' value='Login' />
+        </div>
     </fieldset>
-    <p>
-        <input type='submit' value='Login' />
-    </p>
 </form>

@@ -3,38 +3,35 @@
 <form method='post' action='[% c.uri_for("/user/create") %]'>
     <fieldset>
         <legend>Create User</legend>
-        <p>
-            <label for='user-username'>
-                Username:
+            <div class='field user-username'>
+                <label for='user-username'>Username:</label>
                 <input type='text' name='username' id='user-username' />
-            </label>
-        </p>
-        <p>
-            <label for='user-password'>
-                Password:
+            </div>
+            <div class='field user-password'>
+                <label for='user-password'>Password:</label>
                 <input type='password' name='password' id='user-password' />
-            </label>
-        </p>
-        <p>
-            <label for='user-email'>
-                E-mail:
+            </div>
+            <div class='field user-email'>
+                <label for='user-email'>E-mail:</label>
                 <input type='text' name='email' id='user-email' />
-            </label>
-        </p>
-        <p>
-            <label for='user-realname'>
-                Real Name:
+            </div>
+            <div class='field user-realname'>
+                <label for='user-realname'>Real Name:</label>
                 <input type='text' name='realname' id='user-realname' />
-            </label>
-        </p>
+            </div>
         <fieldset>
             <legend>Roles</legend>
-            [% WHILE ( role = roles_rs.next() ) -%]
-            <input type='checkbox' name='role' value='[% role.id %]' />[% role.role.replace( '-', ' ' ) -%]<br />
-            [% END -%]
+
+            [%- WHILE ( role = roles_rs.next() ) -%]
+            <div class='field user-role'>
+                <input type='checkbox' name='role' id='user-role-[% role.id %]' value='[% role.id %]' />
+                <label for='user-role-[% role.id %]'>[% role.role.replace( '-', ' ' ) %]</label>
+            </div>
+            [%- END -%]
+
         </fieldset>
+        <div class='button user-create'>
+            <input type='submit' value='Create User' />
+        </div>
     </fieldset>
-    <p>
-        <input type='submit' value='Create User' />
-    </p>
 </form>

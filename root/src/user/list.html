@@ -1,22 +1,22 @@
 [% META title = 'List Users' -%]
 
-<ul>
+<ul class='user-list'>
     [% WHILE ( user = users_rs.next() ) -%]
-    <li>
+    <li class='user-gravatar'>
         <img src='[% user.gravatar(100) | html %]' alt='Gravatar' />
     </li>
-    <li>
+    <li class='user-username'>
         <a href='[% c.uri_for( "/user/" _ user.id _ "/retrieve" ) %]'>[% user.username %]</a>
     </li>
     <li>
-        <ul>
-            <li>
+        <ol class='user-action'>
+            <li class='user-update'>
                 <a href='[% c.uri_for( "/user/" _ user.id _ "/update" ) %]'>Update</a>
             </li>
-            <li>
+            <li class='user-delete'>
                 <a href='[% c.uri_for( "/user/" _ user.id _ "/delete" ) %]'>Delete</a>
             </li>
-        </ul>
+        </ol>
     </li>
     [% END -%]
 </ul>
