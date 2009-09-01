@@ -49,8 +49,8 @@ __PACKAGE__->add_unique_constraint("username_unique", ["username"]);
 __PACKAGE__->add_unique_constraint("email_unique", ["email"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.04006 @ 2009-09-01 05:20:35
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:lvMk7YFQM42ydBfTq5otoQ
+# Created by DBIx::Class::Schema::Loader v0.04006 @ 2009-09-01 22:26:01
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:NAmoR0OIX4oUtUVAhvqeiw
 
 __PACKAGE__->add_columns(
     password => {
@@ -81,8 +81,15 @@ sub set_all_roles {
     my ( $self, $roles ) = @_;
 
     $self->user_role->delete();
-    for ( @{$roles} ) {
-        $self->user_role->create( { role_id => $_ } );
+
+    return if $roles eq undef;
+    if ( ref $roles eq 'ARRAY' ) {
+        for ( @{$roles} ) {
+            $self->user_role->create( { role_id => $_ } );
+        }
+    }
+    else {
+        $self->user_role->create( { role_id => $roles } );
     }
 }
 
