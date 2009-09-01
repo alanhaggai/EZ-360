@@ -14,40 +14,42 @@
     </head>
 
     <body>
-        <div id='header'>
-            <h1>EZ::360</h1>
-            <div class='login-status'>
-                [%- IF c.user_exists() %]
-                <img src='[% c.user.gravatar(20) | html %]' alt='Gravatar' />
-                <span class='username'>
-                    <a href='[% c.uri_for( "/user/" _ c.user.id _ "/update" ) %]'>[% c.user.username %]</a>
-                </span>
-                <span>
-                    <a href='[% c.uri_for("/logout") %]'>Logout</a>
-                </span>
-                [%- END %]
+        <div id='container'>
+            <div id='header'>
+                <h1>EZ::360</h1>
+                <div class='login-status'>
+                    [%- IF c.user_exists() %]
+                    <img src='[% c.user.gravatar(20) | html %]' alt='Gravatar' />
+                    <span class='username'>
+                        <a href='[% c.uri_for( "/user/" _ c.user.id _ "/update" ) %]'>[% c.user.username %]</a>
+                    </span>
+                    <span>
+                        <a href='[% c.uri_for("/logout") %]'>Logout</a>
+                    </span>
+                    [%- END %]
+                </div>
             </div>
-        </div>
 
-        <div id='navigation-bar'>
-            <ul>
-                <li><a href='[% c.uri_for("/") %]'>Main</a></li>
-            </ul>
-        </div>
+            <div id='navigation-bar'>
+                <ul>
+                    <li><a href='[% c.uri_for("/") %]'>Main</a></li>
+                </ul>
+            </div>
 
-        <div id='content'>
+            <div id='content'>
 
-            [%- status_message = status_message || c.request.params.status_message -%]
-            [%- IF status_message -%]
-            <div class='status-message'>[% status_message %]</div>
-            [%- END -%]
+                [%- status_message = status_message || c.request.params.status_message -%]
+                [%- IF status_message -%]
+                <div class='status-message'>[% status_message %]</div>
+                [%- END -%]
 
-            [%- content -%]
+                [%- content -%]
 
-        </div>
+            </div>
 
-        <div id='footer'>
-            Copyright &copy; 2009 <a href='http://cubegin.com/'>CubeGin</a>. All rights reserved.
+            <div id='footer'>
+                Copyright &copy; 2009 <a href='http://cubegin.com/'>CubeGin</a>. All rights reserved.
+            </div>
         </div>
     </body>
 
