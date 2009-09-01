@@ -19,6 +19,16 @@ Catalyst Controller.
 sub create : Local : Args(0) {
     my ( $self, $c ) = @_;
 
+    my $user_allowed = $c->user_exists()
+      && $c->check_any_user_role(
+        qw/ superuser
+          can-create-article/
+      );
+    unless ($user_allowed) {
+        $c->stash( error_message => 'Access denied' );
+        $c->detach('/error');
+    }
+
     if ( lc $c->request->method() eq 'post' ) {
         my $title   = $c->request->body_params->{'title'};
         my $content = $c->request->body_params->{'content'};
@@ -85,6 +95,16 @@ sub id : Chained('/') : PathPart('article') : CaptureArgs(1) {
 sub delete : Chained('id') : PathPart('delete') : Args(0) {
     my ( $self, $c ) = @_;
 
+    my $user_allowed = $c->user_exists()
+      && $c->check_any_user_role(
+        qw/ superuser
+          can-delete-article/
+      );
+    unless ($user_allowed) {
+        $c->stash( error_message => 'Access denied' );
+        $c->detach('/error');
+    }
+
     if ( lc $c->request->method() eq 'post' ) {
         eval { $c->stash->{article}->delete(); };
 
@@ -92,7 +112,10 @@ sub delete : Chained('id') : PathPart('delete') : Args(0) {
             $c->response->redirect(
                 $c->uri_for(
                     '/error',
-                    { error_message => 'Error occurred while deleting article.' }
+                    {
+                        error_message =>
+                          'Error occurred while deleting article.'
+                    }
                 )
             );
         }
@@ -112,6 +135,16 @@ sub delete : Chained('id') : PathPart('delete') : Args(0) {
 
 sub update : Chained('id') : PathPart('update') : Args(0) {
     my ( $self, $c ) = @_;
+
+    my $user_allowed = $c->user_exists()
+      && $c->check_any_user_role(
+        qw/ superuser
+          can-update-article/
+      );
+    unless ($user_allowed) {
+        $c->stash( error_message => 'Access denied' );
+        $c->detach('/error');
+    }
 
     if ( lc $c->request->method() eq 'post' ) {
         my $title   = $c->request->body_params->{'title'};

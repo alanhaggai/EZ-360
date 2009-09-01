@@ -26,6 +26,7 @@
             <label for='user-realname'>Real Name:</label>
             <input type='text' name='realname' id='user-realname' value='[% user.realname %]' />
         </div>
+        [% IF c.check_any_user_role( 'superuser', 'can-update-user' ) -%]
         <fieldset>
             <legend>Roles</legend>
             [% WHILE ( role = roles_rs.next() ) -%]
@@ -42,6 +43,7 @@
                 </div>
             [% END %]
         </fieldset>
+        [% END %]
         <div class='button user-update'>
             <input type='submit' value='Update User' />
         </div>
