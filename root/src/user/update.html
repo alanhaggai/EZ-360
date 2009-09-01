@@ -3,6 +3,9 @@
 <form method='post' action='[% c.uri_for( "/user/" _ user.id  _ "/update" ) %]'>
     <fieldset>
         <legend>Update User</legend>
+        <div class='user-gravatar'>
+            <img src='[% user.gravatar(100) | html %]' alt='Gravatar' />
+        </div>
         <div class='field user-username'>
             <label for='user-username'>Username:</label>
             <input type='text' name='username' id='user-username' value='[% user.username %]' />

@@ -2,7 +2,7 @@
 
 <ul class='user-list'>
     <li class='user-gravatar'>
-        <img src='[% user.gravatar(100) %]' alt='Gravatar' />
+        <img src='[% user.gravatar(100) | html %]' alt='Gravatar' />
     </li>
     <li class='user-username'>Username: [% user.username %]</li>
     <li class='user-email'>E-mail: [% user.email %]</li>
