@@ -3,7 +3,6 @@ package EZ::360::Controller::User;
 use strict;
 use warnings;
 use parent 'Catalyst::Controller';
-use Gravatar::URL;
 
 =head1 NAME
 
