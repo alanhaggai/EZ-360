@@ -26,6 +26,10 @@
                     <span>
                         <a href='[% c.uri_for("/logout") %]'>Logout</a>
                     </span>
+                    [%- ELSE %]
+                    <span>
+                        <a href='[% c.uri_for("/login") %]'>Login</a>
+                    </span>
                     [%- END %]
                 </div>
             </div>
@@ -33,6 +37,18 @@
             <div id='navigation-bar'>
                 <ul>
                     <li><a href='[% c.uri_for("/") %]'>Main</a></li>
+                    <li>Article:
+                        <ul>
+                            <li><a href='[% c.uri_for("/article/create") %]'>Create</a></li>
+                            <li><a href='[% c.uri_for("/article/list") %]'>List</a></li>
+                        </ul>
+                    </li>
+                    <li>User:
+                        <ul>
+                            <li><a href='[% c.uri_for("/user/create") %]'>Create</a></li>
+                            <li><a href='[% c.uri_for("/user/list") %]'>List</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
 
