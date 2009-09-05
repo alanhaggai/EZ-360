@@ -49,8 +49,8 @@ __PACKAGE__->add_unique_constraint("username_unique", ["username"]);
 __PACKAGE__->add_unique_constraint("email_unique", ["email"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.04006 @ 2009-09-01 22:26:01
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:NAmoR0OIX4oUtUVAhvqeiw
+# Created by DBIx::Class::Schema::Loader v0.04006 @ 2009-09-05 09:40:28
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:fBDuPmEdnfvf8SSfX0j27w
 
 __PACKAGE__->add_columns(
     password => {
