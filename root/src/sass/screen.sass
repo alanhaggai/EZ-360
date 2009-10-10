@@ -5,36 +5,48 @@
 // Import all the default blueprint modules so that we can access their mixins.
 @import blueprint
 // Import the non-default scaffolding module.
-@import blueprint/modules/scaffolding.sass
+//@import blueprint/modules/scaffolding.sass
 
-// To generate css equivalent to the blueprint css but with your configuration applied, uncomment:
+// Generates css equivalent to the blueprint css but with your configuration applied
 +blueprint
++blueprint-typography
 
-//Recommended Blueprint configuration with scoping and semantic layout:
-+blueprint-typography("body.bp")
-+blueprint-scaffolding("body.bp")
-body.bp
+!navigation_bar_and_content_margin = 20px
+
+body
   +blueprint-utilities
   +blueprint-debug
   +blueprint-interaction
-  // Remove the scaffolding when you're ready to start doing visual design.
-  // Or leave it in if you're happy with how blueprint looks out-of-the-box
-form.bp
-  +blueprint-form
 
-// Page layout can be done using mixins applied to your semantic classes and IDs:
-body.three-col
   #container
     +container
+    font-size: 1.2em
+
   #header, #footer
     +column(!blueprint_grid_columns)
-  #sidebar
-    // One third of the grid columns, rounding down. With 24 cols, this is 8.
-    !sidebar_columns = floor(!blueprint_grid_columns / 3)
+
+  #header
+    background-image: url('../images/header.jpg')
+    height: 112px
+    text-indent: 9999em
+
+  #navigation-bar
+    !sidebar_columns = floor(!blueprint_grid_columns / 4)
     +column(!sidebar_columns)
+    background-color: #e1e2e3
+    margin-top = !navigation_bar_and_content_margin
+    padding: 20px 0px
+
+    ul li
+      list-style-type: none
+
   #content
-    // Two thirds of the grid columns, rounding up.
-    // With 24 cols, this is 16.
-    !content_columns = ceil(2 * !blueprint_grid_columns / 3)
-    // true means it's the last column in the row
+    !content_columns = ceil( 3 * !blueprint_grid_columns / 4 )
     +column(!content_columns, true)
+    margin-top = !navigation_bar_and_content_margin
+
+  #footer
+    background-color: #ddd
+    padding: 10px
+    margin-top: 20px
+    text-align: center
