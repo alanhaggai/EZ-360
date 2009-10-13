@@ -26,19 +26,23 @@
             <div id='header'>
                 <h1>EZ::360</h1>
                 <div class='login-status'>
-                    [%- IF c.user_exists() %]
-                    <img src='[% c.user.gravatar(20) | html %]' alt='Gravatar' />
-                    <span class='username'>
-                        <a href='[% c.uri_for( "/user/" _ c.user.id _ "/update" ) %]'>[% c.user.username %]</a>
-                    </span>
-                    <span>
-                        <a href='[% c.uri_for("/logout") %]'>Logout</a>
-                    </span>
-                    [%- ELSE %]
-                    <span>
-                        <a href='[% c.uri_for("/login") %]'>Login</a>
-                    </span>
-                    [%- END %]
+                    <ul>
+                        [%- IF c.user_exists() %]
+                        <li>
+                            <img src='[% c.user.gravatar(20) | html %]' alt='Gravatar' />
+                        </li>
+                        <li class='username'>
+                            <a href='[% c.uri_for( "/user/" _ c.user.id _ "/update" ) %]'>[% c.user.username %]</a>
+                        </li>
+                        <li>
+                            <a href='[% c.uri_for("/logout") %]'>Logout</a>
+                        </li>
+                        [%- ELSE %]
+                        <li>
+                            <a href='[% c.uri_for("/login") %]'>Login</a>
+                        </li>
+                        [%- END %]
+                    </ul>
                 </div>
             </div>
 
