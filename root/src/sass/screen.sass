@@ -13,6 +13,19 @@
 
 !navigation_bar_and_content_margin = 20px
 
+=button
+  background-image: url('../images/bar.jpg')
+  color: #333
+  border: 1px solid #ccc
+  text-align: center
+  text-decoration: none
+  display: block
+  width: 100px
+
+=button-hover
+  +button
+  border: 1px solid #555
+
 body
   +blueprint-utilities
   +blueprint-debug
@@ -25,16 +38,52 @@ body
   #header, #footer
     +column(!blueprint_grid_columns)
 
+  img
+    border: 1px solid #D0D0D0
+    padding: 1px
+
   #header
     background-image: url('../images/header.jpg')
     height: 112px
-    text-indent: 9999em
+    +prepend-top("45px")
+
+    h1
+      text-indent: 9999em
+
+    div.login-status
+      width = !blueprint_container_size - 2
+      position: absolute
+      top: 0px
+      height: 37px
+      background-image: url('../images/bar.jpg')
+      border: 1px solid #c9c9c9
+      text-align: right
+
+      ul li
+        position: relative
+        top: 8px
+        list-style-type: none
+        display: inline
+        padding-left: 10px
+
+      img
+        position: relative
+        vertical-align: top
+
+      a
+        font-size: 0.8em
+        font-weight: bold
+        text-decoration: none
+        color: #4084c4
+
+      a:hover
+        text-decoration: underline
 
   #navigation-bar
     !sidebar_columns = floor(!blueprint_grid_columns / 4)
     +column(!sidebar_columns)
     background-color: #e1e2e3
-    margin-top = !navigation_bar_and_content_margin
+    +prepend-top(!navigation_bar_and_content_margin)
     padding: 20px 0px
 
     ul li
@@ -43,10 +92,79 @@ body
   #content
     !content_columns = ceil( 3 * !blueprint_grid_columns / 4 )
     +column(!content_columns, true)
-    margin-top = !navigation_bar_and_content_margin
+    +prepend-top(!navigation_bar_and_content_margin)
+
+    ul.user-list
+    
+      li
+        list-style-type: none
+        float: left
+        margin-right: 20px
+
+      li.user-username, li.user-update, li.user-delete
+        position: relative
+        top: 40px
+
+      a
+        +button
+
+      a:hover
+        +button-hover
+
+      li.user-gravatar
+        clear: both
+
+
+  form
+
+    div.field
+      background-color: #ebf4fa
+      margin-bottom: 10px
+      padding: 10px
+      height: 50px
+    
+      label
+        vertical-align: top
+        width: 200px
+        display: block
+
+      input[ type = 'text' ], input[ type = 'password' ], textarea
+        border: 1px solid #c7dae9
+        padding: 5px
+        font-size: 1.8em
+        margin: 0px 0px 0px 250px
+        position: relative
+        top: -20px
+
+    div.article-content
+      height: 500px
+      width: 655px
+
+      textarea
+        font-size: 1.0em
+        font-family: sans-serif
+        line-height: 1.5em
+        height: 430px
+        top: 20px
+        left: -230px
+        width: 600px
+
+    div.user-role
+      height: 20px
+
+      input
+        border: 1px solid #c7dae9
+        width: 20px
+        display: block
+
+      label
+        margin: 0px 0px 0px 50px
+        position: relative
+        top: -16px
+  
 
   #footer
     background-color: #ddd
     padding: 10px
-    margin-top: 20px
+    +prepend-top("20px")
     text-align: center
