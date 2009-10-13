@@ -1,13 +1,20 @@
 [% META title = 'EZ::360 - Retrieve User' -%]
 
-<ul class='user-list'>
+<ul class='user-retrieve'>
     <li class='user-gravatar'>
         <img src='[% user.gravatar(100) | html %]' alt='Gravatar' />
     </li>
-    <li class='user-username'>Username: [% user.username %]</li>
-    <li class='user-email'>E-mail: [% user.email %]</li>
-    <li class='user-realname'>Real Name: [% user.realname %]</li>
-    <li class='user-role-list'>Roles:
+    <li class='user-username'>
+        <strong>Username:</strong> [% user.username %]
+    </li>
+    <li class='user-email'>
+        <strong>E-mail:</strong> <a href='mailto:[% user.email %]'>[% user.email %]</a>
+    </li>
+    <li class='user-realname'>
+        <strong>Real Name:</strong> [% user.realname %]
+    </li>
+    <li class='user-role-list'>
+        <strong>Roles:</strong>
         <ul>
             [%- FOREACH role IN user.roles %]
             <li class='user-role-[% role.id %]'>[% role.role.replace( '-', ' ' ) %]</li>
