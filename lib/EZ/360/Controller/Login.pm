@@ -39,17 +39,17 @@ sub index : Path : Args(0) {
             $c->response->redirect(
                 $c->uri_for(
                     '/',
-                    { status_message => 'You have logged in successfully.' }
+                    { success_message => 'You have logged in successfully.' }
                 )
             );
         }
         else {
             $c->response->redirect(
                 $c->uri_for(
-                    '/error/',
+                    '/status',
                     {
-                        error_message =>
-                          'The username or password you entered is incorrect.'
+                        notice_message =>
+                          'Incorrect username or password'
                     }
                 )
             );

@@ -39,11 +39,10 @@ sub default : Path {
     $c->stash( template => '404.html' );
 }
 
-sub error : Local {
+sub status : Local {
     my ( $self, $c ) = @_;
 
-    $c->response->status(500);
-    $c->stash( template => 'error.html' );
+    $c->stash( template => 'status.html' );
 }
 
 =head2 end

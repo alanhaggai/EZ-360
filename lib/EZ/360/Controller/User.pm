@@ -26,7 +26,7 @@ sub create : Local : Args(0) {
       );
     unless ($user_allowed) {
         $c->stash( error_message => 'Access denied' );
-        $c->detach('/error');
+        $c->detach('/status');
     }
 
     if ( lc $c->request->method() eq 'post' ) {
@@ -36,7 +36,7 @@ sub create : Local : Args(0) {
         my $realname = $c->request->body_params->{'realname'};
         my $roles    = $c->request->body_params->{'role'};
 
-        my $error_message;
+        my $status_message;
         if ( $username && $password && $email ) {
             my $user;
             eval {
@@ -52,23 +52,22 @@ sub create : Local : Args(0) {
             };
 
             if ($@) {
-                $error_message = 'Error while creating user.';
+                $status_message = 'Error while creating user.';
             }
             else {
                 $c->response->redirect(
                     $c->uri_for(
                         '/user/' . $user->id() . '/retrieve',
-                        { status_message => 'User created successfully.' }
+                        { success_message => 'User created successfully.' }
                     )
                 );
                 return;
             }
         }
         else {
-            $error_message ||=
-              'You did not provide a username, password or e-mail.';
+            $status_message ||= 'Username, password or e-mail not provided';
             $c->response->redirect(
-                $c->uri_for( '/error', { error_message => $error_message } ) );
+                $c->uri_for( '/status', { notice_message => $status_message } ) );
         }
     }
     else {
@@ -93,8 +92,8 @@ sub id : Chained('/') : PathPart('user') : CaptureArgs(1) {
 
     my $user = $c->model('DB::User')->find($id);
     unless ($user) {
-        $c->stash( status_message => 'User does not exist.' );
-        $c->detach('/error');
+        $c->stash( notice_message => 'User does not exist.' );
+        $c->detach('/status');
     }
     $c->stash( user => $user );
 }
@@ -114,7 +113,7 @@ sub update : Chained('id') : PathPart('update') : Args(0) {
       );
     unless ($user_allowed) {
         $c->stash( error_message => 'Access denied' );
-        $c->detach('/error');
+        $c->detach('/status');
     }
 
     if ( lc $c->request->method() eq 'post' ) {
@@ -140,8 +139,10 @@ sub update : Chained('id') : PathPart('update') : Args(0) {
                     }
                 );
                 $user->update( { password => $password } ) if $password;
-                $user->set_all_roles($roles) if $c->check_any_user_role(qw/
-                    superuser can-update-user/);
+                $user->set_all_roles($roles) if $c->check_any_user_role(
+                          qw/
+                            superuser can-update-user/
+                );
             };
 
             if ($@) {
@@ -151,7 +152,7 @@ sub update : Chained('id') : PathPart('update') : Args(0) {
                 $c->response->redirect(
                     $c->uri_for(
                         '/user/' . $user->id() . '/retrieve',
-                        { status_message => 'User updated successfully.' }
+                        { success_message => 'User updated successfully.' }
                     )
                 );
 
@@ -160,9 +161,9 @@ sub update : Chained('id') : PathPart('update') : Args(0) {
         }
 
         $error_message ||=
-'You did not provide a username, e-mail, or failed to confirm password.';
+          'Username or e-mail not provided or failed to confirm password';
         $c->response->redirect(
-            $c->uri_for( '/error', { error_message => $error_message } ) );
+            $c->uri_for( '/status', { error_message => $error_message } ) );
     }
     else {
         $c->stash(
@@ -182,7 +183,7 @@ sub delete : Chained('id') : PathPart('delete') : Args(0) {
       );
     unless ($user_allowed) {
         $c->stash( error_message => 'Access denied' );
-        $c->detach('/error');
+        $c->detach('/status');
     }
 
     if ( lc $c->request->method() eq 'post' ) {
@@ -191,7 +192,7 @@ sub delete : Chained('id') : PathPart('delete') : Args(0) {
         if ($@) {
             $c->response->redirect(
                 $c->uri_for(
-                    '/error',
+                    '/status',
                     { error_message => 'Error occurred while deleting user.' }
                 )
             );
@@ -200,7 +201,7 @@ sub delete : Chained('id') : PathPart('delete') : Args(0) {
             $c->response->redirect(
                 $c->uri_for(
                     '/user/list',
-                    { status_message => 'User deleted successfully.' }
+                    { success_message => 'User deleted successfully.' }
                 )
             );
         }

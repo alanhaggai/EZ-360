@@ -26,15 +26,14 @@ sub create : Local : Args(0) {
       );
     unless ($user_allowed) {
         $c->stash( error_message => 'Access denied' );
-        $c->detach('/error');
+        $c->detach('/status');
     }
 
     if ( lc $c->request->method() eq 'post' ) {
         my $title   = $c->request->body_params->{'title'};
         my $content = $c->request->body_params->{'content'};
 
-        my $error_message;
-
+        my $status_message;
         if ( $title && $content ) {
             my $article;
             eval {
@@ -47,13 +46,13 @@ sub create : Local : Args(0) {
             };
 
             if ($@) {
-                $error_message = 'Error while creating article.';
+                $status_message = 'Error while creating article.';
             }
             else {
                 $c->response->redirect(
                     $c->uri_for(
                         '/article/' . $article->id() . '/retrieve',
-                        { status_message => 'Article created successfully.' }
+                        { success_message => 'Article created successfully.' }
                     )
                 );
 
@@ -61,9 +60,9 @@ sub create : Local : Args(0) {
             }
         }
 
-        $error_message ||= 'You did not provide a title, or a content.';
+        $status_message ||= 'Title or content not provided';
         $c->response->redirect(
-            $c->uri_for( '/error', { error_message => $error_message } ) );
+            $c->uri_for( '/status', { notice_message => $status_message } ) );
     }
     else {
         $c->stash( template => 'article/create.html' );
@@ -85,8 +84,8 @@ sub id : Chained('/') : PathPart('article') : CaptureArgs(1) {
     my $article = $c->model('DB::Article')->find($id);
 
     unless ($article) {
-        $c->stash( status_message => 'Article does not exist.' );
-        $c->detach('/error');
+        $c->stash( notice_message => 'Article does not exist' );
+        $c->detach('/status');
     }
 
     $c->stash( article => $article );
@@ -102,7 +101,7 @@ sub delete : Chained('id') : PathPart('delete') : Args(0) {
       );
     unless ($user_allowed) {
         $c->stash( error_message => 'Access denied' );
-        $c->detach('/error');
+        $c->detach('/status');
     }
 
     if ( lc $c->request->method() eq 'post' ) {
@@ -111,7 +110,7 @@ sub delete : Chained('id') : PathPart('delete') : Args(0) {
         if ($@) {
             $c->response->redirect(
                 $c->uri_for(
-                    '/error',
+                    '/status',
                     {
                         error_message =>
                           'Error occurred while deleting article.'
@@ -123,7 +122,7 @@ sub delete : Chained('id') : PathPart('delete') : Args(0) {
             $c->response->redirect(
                 $c->uri_for(
                     '/article/list',
-                    { status_message => 'Article deleted successfully.' }
+                    { success_message => 'Article deleted successfully.' }
                 )
             );
         }
@@ -143,15 +142,14 @@ sub update : Chained('id') : PathPart('update') : Args(0) {
       );
     unless ($user_allowed) {
         $c->stash( error_message => 'Access denied' );
-        $c->detach('/error');
+        $c->detach('/status');
     }
 
     if ( lc $c->request->method() eq 'post' ) {
         my $title   = $c->request->body_params->{'title'};
         my $content = $c->request->body_params->{'content'};
 
-        my $error_message;
-
+        my $status_message;
         if ( $title && $content ) {
             my $article = $c->stash->{article};
             $article->title($title);
@@ -159,13 +157,13 @@ sub update : Chained('id') : PathPart('update') : Args(0) {
             eval { $article->update(); };
 
             if ($@) {
-                $error_message = 'Error while updating article.';
+                $status_message = 'Error while updating article.';
             }
             else {
                 $c->response->redirect(
                     $c->uri_for(
                         '/article/' . $article->id() . '/retrieve',
-                        { status_message => 'Article updated successfully.' }
+                        { success_message => 'Article updated successfully.' }
                     )
                 );
 
@@ -173,9 +171,9 @@ sub update : Chained('id') : PathPart('update') : Args(0) {
             }
         }
 
-        $error_message ||= 'You did not provide a title, or a content.';
+        $status_message ||= 'Title or content not provided';
         $c->response->redirect(
-            $c->uri_for( '/error', { error_message => $error_message } ) );
+            $c->uri_for( '/status', { notice_message => $status_message } ) );
     }
     else {
         $c->stash( template => 'article/update.html' );

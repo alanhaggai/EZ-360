@@ -26,7 +26,7 @@ sub index : Path : Args(0) {
     $c->logout();
     $c->response->redirect(
         $c->uri_for(
-            '/', { status_message => 'You have logged out successfully.' }
+            '/', { success_message => 'You have logged out successfully.' }
         )
     );
 }
