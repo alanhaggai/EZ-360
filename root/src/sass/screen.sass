@@ -80,7 +80,7 @@ body
         text-decoration: underline
 
   #navigation-bar
-    !sidebar_columns = floor(!blueprint_grid_columns / 4)
+    !sidebar_columns = floor( !blueprint_grid_columns / 5 )
     +column(!sidebar_columns)
     background-color: #e1e2e3
     +prepend-top(!navigation_bar_and_content_margin)
@@ -90,7 +90,7 @@ body
       list-style-type: none
 
   #content
-    !content_columns = ceil( 3 * !blueprint_grid_columns / 4 )
+    !content_columns = ceil( 4 * !blueprint_grid_columns / 5 )
     +column(!content_columns, true)
     +prepend-top(!navigation_bar_and_content_margin)
 
@@ -165,10 +165,11 @@ body
         margin: 0px 0px 0px 250px
         position: relative
         top: -20px
+        width: 450px
 
     div.article-content
       height: 500px
-      width: 655px
+      width: 735px
 
       textarea
         font-size: 1.0em
@@ -177,7 +178,7 @@ body
         height: 430px
         top: 20px
         left: -230px
-        width: 600px
+        width: 680px
 
     div.user-role
       height: 20px
