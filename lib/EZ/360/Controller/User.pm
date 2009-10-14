@@ -19,15 +19,7 @@ Catalyst Controller.
 sub create : Local : Args(0) {
     my ( $self, $c ) = @_;
 
-    my $user_allowed = $c->user_exists()
-      && $c->check_any_user_role(
-        qw/ superuser
-          can-create-user/
-      );
-    unless ($user_allowed) {
-        $c->stash( error_message => 'Access denied' );
-        $c->detach('/status');
-    }
+    $c->forward( '/check_user_roles', [qw/can-create-user/] );
 
     if ( lc $c->request->method() eq 'post' ) {
         my $username = $c->request->body_params->{'username'};
@@ -67,7 +59,8 @@ sub create : Local : Args(0) {
         else {
             $status_message ||= 'Username, password or e-mail not provided';
             $c->response->redirect(
-                $c->uri_for( '/status', { notice_message => $status_message } ) );
+                $c->uri_for( '/status', { notice_message => $status_message } )
+            );
         }
     }
     else {
@@ -80,6 +73,9 @@ sub create : Local : Args(0) {
 
 sub list : Local : Args(0) {
     my ( $self, $c ) = @_;
+
+    $c->forward( '/check_user_roles',
+        [qw/ can-create-user can-delete-user can-update-user /] );
 
     $c->stash(
         users_rs => $c->model('DB::User'),
@@ -103,17 +99,8 @@ sub update : Chained('id') : PathPart('update') : Args(0) {
 
     my $user = $c->stash->{user};
 
-    my $user_allowed = $c->user_exists()
-      && (
-        $c->check_any_user_role(
-            qw/ superuser
-              can-update-user/
-        )
-        || $c->user->id() == $user->id()
-      );
-    unless ($user_allowed) {
-        $c->stash( error_message => 'Access denied' );
-        $c->detach('/status');
+    if ( $c->user->id() != $user->id() ) {
+        $c->forward( '/check_user_roles', [qw/can-update-user/] );
     }
 
     if ( lc $c->request->method() eq 'post' ) {
@@ -125,7 +112,6 @@ sub update : Chained('id') : PathPart('update') : Args(0) {
         my $roles            = $c->request->body_params->{'role'};
 
         my $error_message;
-
         if (   $username
             && $email
             && ( $password eq $confirm_password ) )
@@ -140,8 +126,8 @@ sub update : Chained('id') : PathPart('update') : Args(0) {
                 );
                 $user->update( { password => $password } ) if $password;
                 $user->set_all_roles($roles) if $c->check_any_user_role(
-                          qw/
-                            superuser can-update-user/
+                    qw/
+                      superuser can-update-user/
                 );
             };
 
@@ -176,15 +162,7 @@ sub update : Chained('id') : PathPart('update') : Args(0) {
 sub delete : Chained('id') : PathPart('delete') : Args(0) {
     my ( $self, $c ) = @_;
 
-    my $user_allowed = $c->user_exists()
-      && $c->check_any_user_role(
-        qw/ superuser
-          can-delete-user/
-      );
-    unless ($user_allowed) {
-        $c->stash( error_message => 'Access denied' );
-        $c->detach('/status');
-    }
+    $c->forward( '/check_user_roles', [qw/can-delete-user/] );
 
     if ( lc $c->request->method() eq 'post' ) {
         eval { $c->stash->{user}->delete(); };
@@ -214,6 +192,9 @@ sub delete : Chained('id') : PathPart('delete') : Args(0) {
 
 sub retrieve : Chained('id') : PathPart('retrieve') : Args(0) {
     my ( $self, $c ) = @_;
+
+    $c->forward( '/check_user_roles',
+        [qw/ can-create-user can-delete-user can-update-user /] );
 
     $c->stash( template => 'user/retrieve.html' );
 }

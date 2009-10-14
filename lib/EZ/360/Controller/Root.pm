@@ -45,6 +45,17 @@ sub status : Local {
     $c->stash( template => 'status.html' );
 }
 
+sub check_user_roles : Private {
+    my ( $self, $c, @roles ) = @_;
+
+    unless ( $c->user_exists()
+        && $c->check_any_user_role( 'superuser', @roles ) )
+    {
+        $c->stash( error_message => 'Access denied' );
+        $c->detach('/status');
+    }
+}
+
 =head2 end
 
 Attempt to render a view, if needed.
