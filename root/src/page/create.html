@@ -1,0 +1,14 @@
+[% META title = 'EZ::360 - Create Page' -%]
+
+<form method='post' action='[% c.uri_for("/page/create") %]'>
+    <fieldset>
+        <legend>Create Page</legend>
+        <div class='field page-title'>
+            <label for='page-title'>Title:</label>
+            <input type='text' name='title' id='page-title' />
+        </div>
+        <div class='button page-create'>
+            <input type='submit' value='Create Page' />
+        </div>
+    </fieldset>
+</form>
