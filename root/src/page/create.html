@@ -2,7 +2,8 @@
 
 <script type='text/javascript'>
     function add() {
-        list = document.getElementById('page-list-articles');
+        list  = document.getElementById('page-list-articles');
+        added = document.getElementById('page-added-articles')
         if ( list.selectedIndex != -1 ) {
             var option = document.createElement('option'); 
             option.text  = list.options[ list.selectedIndex ].text;
@@ -22,9 +23,16 @@
             added.remove(added.selectedIndex);
         }
     }
+
+    function make_article_list() {
+        added = document.getElementById('page-added-articles');
+        for ( i = 0; i < added.length; i++ ) {
+            document.getElementById('articles').value += added.options[i].value + ' ';
+        }
+    }
 </script>
 
-<form method='post' action='[% c.uri_for("/page/create") %]'>
+<form method='post' action='[% c.uri_for("/page/create") %]' onsubmit='make_article_list()'>
     <fieldset class='page-create'>
         <legend>Create Page</legend>
         <div class='field page-title'>
@@ -39,8 +47,9 @@
             </select>
             <a class='add' href='javascript:void(0)' onclick='add()' >Add</a>
             <a class='remove' href='javascript:void(0)' onclick='remove()'>Remove</a>
-            <select name='articles' class='page-added-articles' id='page-added-articles' size='10'>
+            <select class='page-added-articles' id='page-added-articles' size='10'>
             </select>
+            <input type='text' name='articles' id='articles' style='display: none' />
         </div>
         <div class='button page-create'>
             <input type='submit' value='Create Page' />
