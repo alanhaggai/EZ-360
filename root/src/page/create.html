@@ -25,9 +25,11 @@
     }
 
     function make_article_list() {
-        added = document.getElementById('page-added-articles');
+        added          = document.getElementById('page-added-articles');
+        articles       = document.getElementById('articles');
+        articles.value = '';
         for ( i = 0; i < added.length; i++ ) {
-            document.getElementById('articles').value += added.options[i].value + ' ';
+            articles.value += added.options[i].value + ' ';
         }
     }
 </script>
