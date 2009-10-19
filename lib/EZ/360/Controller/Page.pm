@@ -24,7 +24,10 @@ Catalyst Controller.
 sub create : Local : Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->stash( template => 'page/create.html' );
+    $c->stash(
+        articles => [ $c->model('DB::Article')->all() ],
+        template => 'page/create.html',
+    );
 }
 
 

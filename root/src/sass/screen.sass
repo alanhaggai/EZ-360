@@ -158,10 +158,10 @@ body
         width: 200px
         display: block
 
-      input[ type = 'text' ], input[ type = 'password' ], textarea
+      input[ type = 'text' ], input[ type = 'password' ], textarea, select
         border: 1px solid #c7dae9
         padding: 5px
-        font-size: 1.8em
+        font-size: 1.1em
         margin: 0px 0px 0px 250px
         position: relative
         top: -20px
@@ -192,7 +192,38 @@ body
         margin: 0px 0px 0px 50px
         position: relative
         top: -16px
-  
+
+    div.page-articles
+
+      height: 160px
+    
+      select.page-list-articles, select.page-added-articles
+        position: relative
+        width: 270px
+        font-size: 0.8em
+
+      select.page-list-articles
+        top: 5px
+        left: -230px
+
+      select.page-added-articles
+        top: -196px
+        left: 200px
+
+      .add, .remove
+        +button
+        position: relative
+        left: 320px
+
+      .add
+        top: -120px
+
+      .remove
+        top: -100px
+
+      .add:hover, .remove:hover
+        +button-hover
+
 
   #footer
     background-color: #ddd
