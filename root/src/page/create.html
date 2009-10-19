@@ -2,36 +2,24 @@
 
 <script type='text/javascript'>
     function add() {
-        if ( document.getElementById('page-list-articles').selectedIndex != -1 ) {
-            document.getElementById('page-list-articles-hidden').selectedIndex = document.getElementById('page-list-articles').selectedIndex;
-
-            var option1 = document.createElement('option'); 
-            option1.text = document.getElementById('page-list-articles').value;
-            document.getElementById('page-added-articles').add( option1, null );
-
-            var option2 = document.createElement('option'); 
-            option2.text= document.getElementById('page-list-articles-hidden').value;
-            document.getElementById('page-added-articles-hidden').add( option2, null );
-
-            document.getElementById('page-list-articles').remove( document.getElementById('page-list-articles').selectedIndex );
-            document.getElementById('page-list-articles-hidden').remove( document.getElementById('page-list-articles-hidden').selectedIndex );
+        list = document.getElementById('page-list-articles');
+        if ( list.selectedIndex != -1 ) {
+            var option = document.createElement('option'); 
+            option.text  = list.options[ list.selectedIndex ].text;
+            option.value = list.options[ list.selectedIndex ].value;
+            document.getElementById('page-added-articles').add( option, null );
+            list.remove(list.selectedIndex);
         }
     }
 
     function remove() {
-        if ( document.getElementById('page-added-articles').selectedIndex != -1 ) {
-            document.getElementById('page-added-articles-hidden').selectedIndex = document.getElementById('page-added-articles').selectedIndex;
-
-            var option1 = document.createElement('option'); 
-            option1.text = document.getElementById('page-added-articles').value;
-            document.getElementById('page-list-articles').add( option1, null );
-
-            var option2 = document.createElement('option'); 
-            option2.text= document.getElementById('page-added-articles-hidden').value;
-            document.getElementById('page-list-articles-hidden').add( option2, null );
-
-            document.getElementById('page-added-articles').remove( document.getElementById('page-added-articles').selectedIndex );
-            document.getElementById('page-added-articles-hidden').remove( document.getElementById('page-added-articles-hidden').selectedIndex );
+        added = document.getElementById('page-added-articles');
+        if ( added.selectedIndex != -1 ) {
+            var option = document.createElement('option'); 
+            option.text  = added.options[ added.selectedIndex ].text;
+            option.value = added.options[ added.selectedIndex ].value;
+            document.getElementById('page-list-articles').add( option, null );
+            added.remove(added.selectedIndex);
         }
     }
 </script>
@@ -46,21 +34,12 @@
         <div class='field page-articles'>
             <select class='page-list-articles' id='page-list-articles' size='10'>
                 [% FOREACH article IN articles -%]
-                <option>[% article.title %]</option>
+                <option value='[% article.id %]'>[% article.title %]</option>
                 [% END -%]
             </select>
             <a class='add' href='javascript:void(0)' onclick='add()' >Add</a>
             <a class='remove' href='javascript:void(0)' onclick='remove()'>Remove</a>
-            <select class='page-added-articles' id='page-added-articles' size='10'>
-            </select>
-        </div>
-        <div style='display: none'>
-            <select size='10' id='page-list-articles-hidden'>
-                [% FOREACH article IN articles -%]
-                <option>[% article.id %]</option>
-                [% END -%]
-            </select>
-            <select name='articles' size='10' id='page-added-articles-hidden'>
+            <select name='articles' class='page-added-articles' id='page-added-articles' size='10'>
             </select>
         </div>
         <div class='button page-create'>
