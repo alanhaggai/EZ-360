@@ -63,9 +63,5 @@ __PACKAGE__->add_columns(
     },
 );
 
-__PACKAGE__->might_have(
-    link => 'EZ::360::Schema::Result::Link', 'article_id'
-);
-
 # You can replace this text with custom content, and it will be preserved on regeneration
 1;
