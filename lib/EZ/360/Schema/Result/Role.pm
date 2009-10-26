@@ -27,8 +27,8 @@ __PACKAGE__->set_primary_key("id");
 __PACKAGE__->add_unique_constraint("role_unique", ["role"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.04006 @ 2009-09-05 09:40:28
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:2XGN9C3gOV5EhrO5sQr6Hw
+# Created by DBIx::Class::Schema::Loader v0.04006 @ 2009-10-24 00:03:08
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:RLxteJVpAtjR7OfRKL6yHw
 
 __PACKAGE__->has_many(
     user_role => 'EZ::360::Schema::Result::UserRole', 'role_id' 

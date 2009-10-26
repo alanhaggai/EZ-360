@@ -193,37 +193,35 @@ body
         position: relative
         top: -16px
 
-    div.page-articles
+    #page-create
 
-      height: 160px
-    
-      select.page-list-articles, select.page-added-articles
-        position: relative
-        width: 270px
-        font-size: 0.8em
+      div.title
 
-      select.page-list-articles
-        top: 5px
-        left: -230px
+        label
+          display: block
 
-      select.page-added-articles
-        top: -196px
-        left: 200px
+        input[type='text']
+          width: 740px
 
-      .add, .remove
-        +button
-        position: relative
-        left: 320px
+        select option
+          display: block
+          width: 100px
 
-      .add
-        top: -120px
+      div.articles
 
-      .remove
-        top: -100px
+        select
+          display: block
+          width: 300px
+          float: left
 
-      .add:hover, .remove:hover
-        +button-hover
+        div.buttons
+          position: relative
+          top: 70px
+          float: left
+          margin: 10px
 
+      #parent
+        width: 700px
 
   #footer
     background-color: #ddd
