@@ -1,0 +1,13 @@
+[% META title = 'EZ::360 - Retrieve Page' -%]
+
+<div class='page'>
+    <div class='title'>
+        <h2>[% page.title %]</h2>
+    </div>
+    <div class='articles'>
+        [% FOR article IN page.articles %]
+            <h3 class='title'>[% article.article.title %]</h3>
+            <div class='content'>[% article.article.content %]</div>
+        [% END %]
+    </div>
+</div>

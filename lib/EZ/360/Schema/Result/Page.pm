@@ -43,7 +43,7 @@ __PACKAGE__->has_many(
 );
 
 __PACKAGE__->has_many(
-    article => 'EZ::360::Schema::Result::PageArticle',
+    articles => 'EZ::360::Schema::Result::PageArticle',
     'page_id'
 );
 

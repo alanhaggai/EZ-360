@@ -78,6 +78,25 @@ sub list : Local : Args(0) {
     );
 }
 
+sub id : Chained('/') : PathPart('page') : CaptureArgs(1) {
+    my ( $self, $c, $id ) = @_;
+
+    my $page = $c->model('DB::Page')->find($id);
+
+    unless ($page) {
+        $c->stash( notice_message => 'Page does not exist' );
+        $c->detach('/status');
+    }
+
+    $c->stash( page => $page );
+}
+
+sub retrieve : Chained('id') : PathPart('retrieve') : Args(0) {
+    my ( $self, $c ) = @_;
+
+    $c->stash( template => 'page/retrieve.html' );
+}
+
 =head1 AUTHOR
 
 Alan Haggai Alavi
