@@ -26,8 +26,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("user_id", "role_id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.04006 @ 2009-10-24 00:03:08
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ShnyPVLShLoHIEwz15Y71Q
+# Created by DBIx::Class::Schema::Loader v0.04006 @ 2009-10-26 23:54:58
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:qTvF5rZmKygDSVupkJeAGg
 
 __PACKAGE__->belongs_to(
     user => 'EZ::360::Schema::Result::User', 'user_id'
