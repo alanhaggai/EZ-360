@@ -25,11 +25,11 @@
     }
 
     function make_article_list() {
-        new_articles   = document.getElementById('new-articles');
-        articles       = document.getElementById('articles');
-        articles.value = '';
+        new_articles    = document.getElementById('new-articles');
+        articles_string = document.getElementById('articles-string');
+        articles_string.value = '';
         for ( i = 0; i < new_articles.length; i++ ) {
-            articles.value += new_articles.options[i].value + ' ';
+            articles_string.value += new_articles.options[i].value + ' ';
         }
     }
 
@@ -70,15 +70,15 @@
                     </div>
                     <select id='new-articles' size='10'>
                     </select>
-                    <input type='text' name='articles' id='articles' style='display: none' />
+                    <input type='text' name='articles-string' id='articles-string' style='display: none' />
                 </div>
             </fieldset>
             <fieldset>
                 <legend>Parent</legend>
                 <div>
-                    <select id='parent' size='10'>
-                        [% FOREACH article IN articles -%]
-                        <option value='[% article.id %]'>[% article.title %]</option>
+                    <select name='parent' id='parent' size='10'>
+                        [% FOREACH page IN pages -%]
+                        <option value='[% page.id %]'>[% page.title %]</option>
                         [% END -%]
                     </select>
                 </div>
