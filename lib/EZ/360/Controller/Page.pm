@@ -69,6 +69,14 @@ sub create : Local : Args(0) {
     );
 }
 
+sub list : Local : Args(0) {
+    my ( $self, $c ) = @_;
+
+    $c->stash(
+        pages    => [ $c->model('DB::Page')->all() ],
+        template => 'page/list.html'
+    );
+}
 
 =head1 AUTHOR
 

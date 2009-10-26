@@ -1,0 +1,19 @@
+[% META title = 'EZ::360 - List Pages' -%]
+
+<ul class='list'>
+    [% FOREACH page IN pages -%]
+    <li class='title'>
+        <a href='[% c.uri_for( "/page/" _ page.id _ "/retrieve" ) %]'>[% page.title %]</a>
+    </li>
+    <li>
+        <ol class='action'>
+            <li class='update'>
+                <a href='[% c.uri_for( "/page/" _ page.id _ "/update" ) %]'>Update</a>
+            </li>
+            <li class='delete'>
+                <a href='[% c.uri_for( "/page/" _ page.id _ "/delete" ) %]'>Delete</a>
+            </li>
+        </ol>
+    </li>
+    [% END -%]
+</ul>
