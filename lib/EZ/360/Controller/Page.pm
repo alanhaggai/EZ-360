@@ -23,6 +23,8 @@ Catalyst Controller.
 sub create : Local : Args(0) {
     my ( $self, $c ) = @_;
 
+    $c->forward( '/check_user_roles', [qw/user/] );
+
     if ( lc $c->request->method() eq 'post' ) {
         my $title           = $c->request->body_params->{'title'};
         my $articles_string = $c->request->body_params->{'articles-string'};
@@ -72,6 +74,8 @@ sub create : Local : Args(0) {
 sub list : Local : Args(0) {
     my ( $self, $c ) = @_;
 
+    $c->forward( '/check_user_roles', [qw/user/] );
+
     $c->stash(
         pages    => [ $c->model('DB::Page')->all() ],
         template => 'page/list.html'
@@ -93,6 +97,8 @@ sub id : Chained('/') : PathPart('page') : CaptureArgs(1) {
 
 sub retrieve : Chained('id') : PathPart('retrieve') : Args(0) {
     my ( $self, $c ) = @_;
+
+    $c->forward( '/check_user_roles', [qw/user/] );
 
     $c->stash( template => 'page/retrieve.html' );
 }

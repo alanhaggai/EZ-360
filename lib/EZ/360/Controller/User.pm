@@ -19,7 +19,7 @@ Catalyst Controller.
 sub create : Local : Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->forward( '/check_user_roles', [qw/can-create-user/] );
+    $c->forward('/check_user_roles');
 
     if ( lc $c->request->method() eq 'post' ) {
         my $username = $c->request->body_params->{'username'};
@@ -74,8 +74,7 @@ sub create : Local : Args(0) {
 sub list : Local : Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->forward( '/check_user_roles',
-        [qw/ can-create-user can-delete-user can-update-user /] );
+    $c->forward( '/check_user_roles', [qw/user/] );
 
     $c->stash(
         users_rs => $c->model('DB::User'),
@@ -100,7 +99,7 @@ sub update : Chained('id') : PathPart('update') : Args(0) {
     my $user = $c->stash->{user};
 
     if ( $c->user->id() != $user->id() ) {
-        $c->forward( '/check_user_roles', [qw/can-update-user/] );
+        $c->forward('/check_user_roles');
     }
 
     if ( lc $c->request->method() eq 'post' ) {
@@ -162,7 +161,7 @@ sub update : Chained('id') : PathPart('update') : Args(0) {
 sub delete : Chained('id') : PathPart('delete') : Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->forward( '/check_user_roles', [qw/can-delete-user/] );
+    $c->forward('/check_user_roles');
 
     if ( lc $c->request->method() eq 'post' ) {
         eval { $c->stash->{user}->delete(); };
@@ -193,8 +192,7 @@ sub delete : Chained('id') : PathPart('delete') : Args(0) {
 sub retrieve : Chained('id') : PathPart('retrieve') : Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->forward( '/check_user_roles',
-        [qw/ can-create-user can-delete-user can-update-user /] );
+    $c->forward( '/check_user_roles', [qw/user/] );
 
     $c->stash( template => 'user/retrieve.html' );
 }
