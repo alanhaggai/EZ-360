@@ -91,7 +91,12 @@ sub delete : Chained('id') : PathPart('delete') : Args(0) {
     $c->forward( '/check_user_roles', [qw/user/] );
 
     if ( lc $c->request->method() eq 'post' ) {
-        eval { $c->stash->{article}->delete(); };
+        eval {
+            my $article = $c->stash->{article};
+            $c->model('DB::PageArticle')
+              ->search( { article_id => $article->id() } )->delete();
+            $article->delete();
+        };
 
         if ($@) {
             $c->response->redirect(
