@@ -77,6 +77,7 @@
                 <legend>Parent</legend>
                 <div>
                     <select name='parent' id='parent' size='10'>
+                        <option value=''>No Parent</option>
                         [% FOREACH page IN pages -%]
                         <option value='[% page.id %]'>[% page.title %]</option>
                         [% END -%]

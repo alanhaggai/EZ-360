@@ -33,15 +33,17 @@ sub create : Local : Args(0) {
         my @articles = split /\s/, $articles_string;
 
         my $status_message;
-        if ( $title && @articles ) {
+        if ($title) {
             my $page;
             eval {
                 $page = $c->model('DB::Page')->create( { title => $title } );
                 for (@articles) {
-                    $page->create_related( 'article', { article_id => $_ } );
+                    $page->create_related( 'articles', { article_id => $_ } );
                 }
-                $c->model('DB::PageRelation')
-                  ->create( { page_id => $parent, child => $page->id() } );
+                if ($parent) {
+                    $c->model('DB::PageRelation')
+                      ->create( { page_id => $parent, child => $page->id() } );
+                }
             };
 
             if ($@) {
