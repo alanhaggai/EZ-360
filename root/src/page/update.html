@@ -1,0 +1,97 @@
+[% META title = 'EZ::360 - Update Page' -%]
+
+<script type='text/javascript'>
+    function add() {
+        list  = document.getElementById('articles');
+        new_articles = document.getElementById('new-articles');
+        if ( list.selectedIndex != -1 ) {
+            var option = document.createElement('option'); 
+            option.text  = list.options[ list.selectedIndex ].text;
+            option.value = list.options[ list.selectedIndex ].value;
+            document.getElementById('new-articles').add( option, null );
+            list.remove(list.selectedIndex);
+        }
+    }
+
+    function remove() {
+        new_articles = document.getElementById('new-articles');
+        if ( new_articles.selectedIndex != -1 ) {
+            var option = document.createElement('option'); 
+            option.text  = new_articles.options[ new_articles.selectedIndex ].text;
+            option.value = new_articles.options[ new_articles.selectedIndex ].value;
+            document.getElementById('articles').add( option, null );
+            new_articles.remove(new_articles.selectedIndex);
+        }
+    }
+
+    function make_article_list() {
+        new_articles    = document.getElementById('new-articles');
+        articles_string = document.getElementById('articles-string');
+        articles_string.value = '';
+        for ( i = 0; i < new_articles.length; i++ ) {
+            articles_string.value += new_articles.options[i].value + ' ';
+        }
+    }
+
+    function validate() {
+        if ( !/^\s*$/.exec( document.getElementById('title').value ) ) {
+            make_article_list();
+            return true;
+        }
+        else {
+            alert('Title is required');
+
+            window.location = '#title';
+            document.getElementById('title').focus(true);
+            return false;
+        }
+    }
+</script>
+
+<form method='post' action='[% c.uri_for( "/page/" _ page.id _  "/update") %]' onsubmit='return validate()'>
+    <fieldset id='page-update'>
+        <legend>Update Page</legend>
+        <div class='title'>
+            <label for='title'>Title:</label>
+            <input type='text' name='title' id='title' value='[% page.title %]' />
+            <fieldset>
+                <legend>Articles</legend>
+                <div class='articles'>
+                    <select id='articles' size='10'>
+                        [% FOREACH article IN articles_not_in_page -%]
+                        <option value='[% article.id %]'>[% article.title %]</option>
+                        [%- END -%]
+                    </select>
+                    <div class='buttons'>
+                        <input type='button' onclick='remove()' value='←' />
+                        <input type='button' onclick='add()' value='→' />
+                    </div>
+                    <select id='new-articles' size='10'>
+                        [% FOREACH article IN page.articles -%]
+                        <option value='[% article.article.id %]'>[% article.article.title %]</option>
+                        [% END -%]
+                    </select>
+                    <input type='text' name='articles-string' id='articles-string' style='display: none' />
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Parent</legend>
+                <div>
+                    <select name='parent' id='parent' size='10'>
+                        <option value=''>No Parent</option>
+                        [% FOREACH parent_page IN pages;
+                            IF page.parent.page_id == parent_page.id -%] 
+                        <option value='[% parent_page.id %]' selected='selected'>[% parent_page.title %]</option>
+                            [% ELSE -%]
+                        <option value='[% parent_page.id %]'>[% parent_page.title %]</option>
+                            [% END;
+                        END -%]
+                    </select>
+                </div>
+            </fieldset>
+        </div>
+        <div>
+            <input type='submit' value='Update Page' />
+        </div>
+    </fieldset>
+</form>

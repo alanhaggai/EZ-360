@@ -47,5 +47,10 @@ __PACKAGE__->has_many(
     'page_id'
 );
 
+__PACKAGE__->belongs_to(
+    parent => 'EZ::360::Schema::Result::PageRelation',
+    { 'foreign.child' => 'self.id' }
+);
+
 # You can replace this text with custom content, and it will be preserved on regeneration
 1;
