@@ -38,7 +38,7 @@
                     [%- END -%]
                 [%- END %]
                 <div class='field user-role'>
-                    <input type='checkbox' name='role' id='user-role-[% role.id %]' value='[% role.id %]'[% role_status %] />
+                    <input type='radio' name='role' id='user-role-[% role.id %]' value='[% role.id %]'[% role_status %] />
                     <label for='user-role-[% role.id %]'>[% role.role.replace( '-', ' ' ) %]</label>
                 </div>
             [% END %]
