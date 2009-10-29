@@ -80,6 +80,7 @@
                     <select name='parent' id='parent' size='10'>
                         <option value=''>No Parent</option>
                         [% FOREACH parent_page IN pages;
+                            NEXT IF parent_page.id == page.id;
                             IF page.parent.page_id == parent_page.id -%] 
                         <option value='[% parent_page.id %]' selected='selected'>[% parent_page.title %]</option>
                             [% ELSE -%]
