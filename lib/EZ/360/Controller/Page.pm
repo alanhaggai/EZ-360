@@ -97,6 +97,42 @@ sub id : Chained('/') : PathPart('page') : CaptureArgs(1) {
     $c->stash( page => $page );
 }
 
+sub delete : Chained('id') : PathPart('delete') : Args(0) {
+    my ( $self, $c ) = @_;
+
+    $c->forward( '/check_user_roles', [qw/user/] );
+
+    if ( lc $c->request->method() eq 'post' ) {
+        eval {
+            my $page = $c->stash->{page};
+            $page->delete_related('articles');
+            $page->delete_related('children');
+            $page->delete_related('parent');
+            $page->delete();
+        };
+
+        if ($@) {
+            $c->response->redirect(
+                $c->uri_for(
+                    '/status',
+                    { error_message => 'Error occurred while deleting page.' }
+                )
+            );
+        }
+        else {
+            $c->response->redirect(
+                $c->uri_for(
+                    '/page/list',
+                    { success_message => 'Page deleted successfully.' }
+                )
+            );
+        }
+    }
+    else {
+        $c->stash( template => 'page/delete.html' );
+    }
+}
+
 sub retrieve : Chained('id') : PathPart('retrieve') : Args(0) {
     my ( $self, $c ) = @_;
 

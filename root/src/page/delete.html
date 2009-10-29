@@ -1,0 +1,14 @@
+[% META title = 'EZ::360 - Delete Page' -%]
+
+<form method='post' action='[% c.uri_for( "/page/" _ page.id _ "/delete" ) %]'>
+    <fieldset>
+        <legend>Delete Page</legend>
+        <div class='field page-delete'>
+            Are you sure you want to delete the page with the title
+            <em class='page-title'>[% page.title%]</em>?
+        </div>
+        <div class='button page-delete-confirm'>
+            <input type='submit' value='Delete Article' />
+        </div>
+    </fieldset>
+</form>
